@@ -59,11 +59,12 @@ def feature_engineering():
     df[numerical_cols] = standard_scaler.fit_transform(df[numerical_cols])
 
 
-    print("Saving feature engineered dataset...")
-    df.to_csv("../data/processed/emp_attrition_features.csv",index=False)
+    # print("Saving feature engineered dataset...")
+    # df.to_csv("../data/processed/emp_attrition_features.csv",index=False)
 
-    print("Feature engineering completed successfully!")
+    # print("Feature engineering completed successfully!")
 
+    print(df["Attrition"].value_counts())
 
 if __name__ == "__main__":
     try:
