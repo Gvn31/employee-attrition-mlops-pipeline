@@ -20,10 +20,10 @@ def train_model():
     # Split the data into training and testing sets
     print("Splitting dataset...")
 
-    X = df.drop(columns=['Attrition'])
+    x = df.drop(columns=['Attrition'])
     y = df['Attrition']
     
-    x_train,x_test,y_train,y_test=train_test_split(X,y,test_size=0.2,random_state=42,stratify=y)
+    x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=42,stratify=y)
 
     
 
@@ -40,10 +40,10 @@ def train_model():
 
     model2=RandomForestClassifier(random_state=42)
     param_grid = {
-        "n_estimators": [100, 200],
-        "max_depth": [10, 20, None],
-        "min_samples_split": [2, 5],
-        "min_samples_leaf": [1, 2]
+        "n_estimators": [100,200,300,500],
+        "max_depth": [10,20,30,None],
+        "min_samples_split": [2,5,10],
+        "min_samples_leaf": [1,2,4]
     }
 
     # Grid Search
@@ -59,9 +59,11 @@ def train_model():
     best_rf_model = grid_search.best_estimator_
     print("Best Parameters:", grid_search.best_params_)
 
+
+
     print("Training Complete!")
 
-    # Save the trained models
+    #Save the trained models
     print("Saving Trained Models")
     joblib.dump(
         model1,"../models/logistic_regression.pkl"
