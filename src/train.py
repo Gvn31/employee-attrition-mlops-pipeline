@@ -111,10 +111,13 @@ def train_model():
     )
 
     xgb_param_grid = {
-        "n_estimators": [100, 200],
+        "n_estimators": [100, 200, 300],
         "max_depth": [3, 5, 7],
-        "learning_rate": [0.01, 0.1],
-        "subsample": [0.8, 1.0]
+        "learning_rate": [0.01, 0.05, 0.1],
+        "subsample": [0.8, 1.0],
+        "colsample_bytree": [0.8, 1.0],
+        "gamma": [0, 0.1, 0.3],
+        "min_child_weight": [1, 3]
     }
 
     xgb_grid_search = GridSearchCV(
