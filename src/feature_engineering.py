@@ -1,5 +1,6 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
+import joblib
 
 
 def feature_engineering():
@@ -57,14 +58,20 @@ def feature_engineering():
         "Company Tenure (In Months)"
     ]
     df[numerical_cols] = standard_scaler.fit_transform(df[numerical_cols])
+    joblib.dump(standard_scaler,"../models/scaler.pkl")
+    print("Saved scaler as Pickle file...")
 
 
-    # print("Saving feature engineered dataset...")
-    # df.to_csv("../data/processed/emp_attrition_features.csv",index=False)
+    feature_columns = df.drop(columns=["Attrition"]).columns
+    joblib.dump(feature_columns,"../models/feature_columns.pkl")
+    print("Saved feature columns as Pickle file...")
 
-    # print("Feature engineering completed successfully!")
+    print("Saving feature engineered dataset...")
+    df.to_csv("../data/processed/emp_attrition_features.csv",index=False)
 
-    print(df["Attrition"].value_counts())
+    print("Feature engineering completed successfully!")
+
+
 
 if __name__ == "__main__":
     try:
