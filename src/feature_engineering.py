@@ -58,13 +58,14 @@ def feature_engineering():
         "Company Tenure (In Months)"
     ]
     df[numerical_cols] = standard_scaler.fit_transform(df[numerical_cols])
-    joblib.dump(standard_scaler,"../models/scaler.pkl")
-    print("Saved scaler as Pickle file...")
+    # Save scaler
+    joblib.dump(standard_scaler, "../models/scaler.pkl")
+    print("Scaler saved successfully!")
 
-
-    feature_columns = df.drop(columns=["Attrition"]).columns
-    joblib.dump(feature_columns,"../models/feature_columns.pkl")
-    print("Saved feature columns as Pickle file...")
+    # Save feature column names
+    feature_columns = df.drop(columns=["Attrition"]).columns.tolist()
+    joblib.dump(feature_columns, "../models/feature_columns.pkl")
+    print("Feature columns saved successfully!")
 
     print("Saving feature engineered dataset...")
     df.to_csv("../data/processed/emp_attrition_features.csv",index=False)
