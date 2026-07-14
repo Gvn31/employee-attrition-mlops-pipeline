@@ -38,7 +38,7 @@ def transform_features(df, training=True):
         "Employee Recognition"
     ]
 
-    df = pd.get_dummies(df,columns=categorical_cols,drop_first=True,dtype=int)
+    df = pd.get_dummies(df,columns=categorical_cols,drop_first=False,dtype=int)
 
     numerical_cols = [
         "Age",
