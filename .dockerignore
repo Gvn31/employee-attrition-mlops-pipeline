@@ -1,0 +1,9 @@
+venv/
+__pycache__/
+.git/
+.gitignore
+.ipynb_checkpoints/
+mlruns/
+notebooks/
+README.md
+LICENSE
