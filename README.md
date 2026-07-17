@@ -105,20 +105,49 @@ GitHub Actions CI/CD
 
 ```text
 employee-attrition-mlops-pipeline/
+│
 ├── .github/
 │   └── workflows/
 │       └── pipeline.yml
+│
 ├── data/
+│   ├── raw/
+│   │   └── emp_attrition_csv.csv
+│   │
+│   └── processed/
+│       ├── emp_attrition_cleaned.csv
+│       └── emp_attrition_feature_engineered.csv
+│
 ├── logs/
+│   └── prediction_logs.csv
+│
 ├── mlruns/
+│
 ├── models/
+│   ├── decision_tree.pkl
+│   ├── feature_columns.pkl
+│   ├── logistic_regression.pkl
+│   ├── random_forest.pkl
+│   ├── scaler.pkl
+│   └── xgboost.pkl
+│
 ├── notebooks/
+│   └── EDA.ipynb
+│
 ├── src/
+│   ├── app.py
+│   ├── evaluate.py
+│   ├── feature_engineering.py
+│   ├── predict.py
+│   ├── preprocessing.py
+│   └── train.py
+│
 ├── Dockerfile
 ├── .dockerignore
-├── requirements.txt
+├── .gitignore
+├── LICENSE
 ├── README.md
-└── .gitignore
+└── requirements.txt
 ```
 
 ---
