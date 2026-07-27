@@ -7,3 +7,5 @@ xgboost
 mlflow==2.22.1
 uvicorn
 fastapi 
+dvc
+feast

@@ -1,0 +1,5 @@
+outs:
+- md5: b77e8c9f4002ca948a716e119e25fc0c
+  size: 9817793
+  hash: md5
+  path: emp_attrition_csv.csv
