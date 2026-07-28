@@ -2,4 +2,4 @@ venv/
 notebooks/.ipynb_checkpoints
 models/*.pkl
 mlruns/
-src/__pycache__
+src/__pycache__P
