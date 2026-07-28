@@ -41,7 +41,7 @@ def train_model():
     MODEL_DIR = os.path.join(BASE_DIR, "models")
     MLRUNS_DIR = os.path.join(BASE_DIR, "mlruns")
 
-    mlflow.set_tracking_uri(MLRUNS_DIR)
+    mlflow.set_tracking_uri(f"file:///{MLRUNS_DIR.replace(os.sep, '/')}")
     mlflow.set_experiment("Employee Attrition Prediction")
 
     # Load dataset
