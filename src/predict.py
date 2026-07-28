@@ -1,8 +1,12 @@
 import pandas as pd
 import joblib
+import os
 
 from feature_engineering import transform_features
 
+# Base project directory
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MODEL_DIR = os.path.join(BASE_DIR, "models")
 
 def predict():
     """
@@ -13,7 +17,7 @@ def predict():
     """
 
     print("Loading trained model...")
-    model = joblib.load("../models/xgboost.pkl")
+    model = joblib.load(os.path.join(MODEL_DIR, "xgboost.pkl"))
 
     print("Loading sample data...")
 
