@@ -1,5 +1,5 @@
 venv/
 notebooks/.ipynb_checkpoints
 models/*.pkl
-mlruns
+mlruns/
 src/__pycache__
