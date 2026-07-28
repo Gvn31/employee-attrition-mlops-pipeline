@@ -40,6 +40,3 @@ stages:
       - models/decision_tree.pkl
       - models/random_forest.pkl
       - models/xgboost.pkl
-
-    outs:
-      - reports/evaluation_metrics.json
