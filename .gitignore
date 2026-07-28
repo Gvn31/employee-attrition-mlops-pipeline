@@ -1,5 +1,10 @@
 venv/
+.ipynb_checkpoints/
 notebooks/.ipynb_checkpoints
 models/*.pkl
-mlruns/
 src/__pycache__
+**/__pycache__/
+*.py[cod]
+mlruns/
+logs/
+data/processed/*.csv
