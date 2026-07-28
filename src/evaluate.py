@@ -1,5 +1,6 @@
 import pandas as pd
 import joblib
+import os
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
@@ -12,6 +13,11 @@ from sklearn.metrics import (
     classification_report
 )
 
+# Base project directory
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+DATA_DIR = os.path.join(BASE_DIR, "data", "processed")
+MODEL_DIR = os.path.join(BASE_DIR, "models")
 
 def evaluate_model():
     """
@@ -23,7 +29,7 @@ def evaluate_model():
 
     # Load dataset
     print("Loading Feature Engineered Dataset...")
-    df = pd.read_csv("../data/processed/emp_attrition_features.csv")
+    df = pd.read_csv(os.path.join(DATA_DIR, "emp_attrition_features.csv"))
 
     # Split dataset
     print("Splitting Dataset...")
@@ -37,11 +43,11 @@ def evaluate_model():
     print("Loading Trained Models...")
 
     models = {
-        "Logistic Regression": joblib.load("../models/logistic_regression.pkl"),
-        "Decision Tree": joblib.load("../models/decision_tree.pkl"),
-        "Random Forest": joblib.load("../models/random_forest.pkl"),
-        "XGBoost": joblib.load("../models/xgboost.pkl")
-    }
+            "Logistic Regression": joblib.load(os.path.join(MODEL_DIR, "logistic_regression.pkl")),
+            "Decision Tree": joblib.load(os.path.join(MODEL_DIR, "decision_tree.pkl") ),
+            "Random Forest": joblib.load(os.path.join(MODEL_DIR, "random_forest.pkl")),
+            "XGBoost": joblib.load(os.path.join(MODEL_DIR, "xgboost.pkl"))
+        }
 
     best_model = None
     best_f1 = 0
