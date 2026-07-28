@@ -1,5 +1,23 @@
+import os
 import numpy as np
 import pandas as pd
+
+# Base project directory
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+RAW_DATA = os.path.join(
+    BASE_DIR,
+    "data",
+    "raw",
+    "emp_attrition_csv.csv"
+)
+
+PROCESSED_DATA = os.path.join(
+    BASE_DIR,
+    "data",
+    "processed",
+    "emp_attrition_cleaned.csv"
+)
 
 
 def preprocess_data():
@@ -19,7 +37,7 @@ def preprocess_data():
     """
 
     print("Loading Dataset...")
-    df = pd.read_csv("../data/raw/emp_attrition_csv.csv")
+    df = pd.read_csv(RAW_DATA)
 
     print("Cleaning Dataset...")
 
@@ -28,6 +46,7 @@ def preprocess_data():
 
     # Handle Missing Values
     df["Distance from Home"] = df["Distance from Home"].fillna(df["Distance from Home"].median())
+
     df["Company Tenure (In Months)"] = df["Company Tenure (In Months)"].fillna(df["Company Tenure (In Months)"].median())
 
     # Spelling Correction
@@ -39,7 +58,7 @@ def preprocess_data():
     df.drop(["Employee ID"], axis=1, inplace=True)
 
     # Save Cleaned Dataset
-    df.to_csv("../data/processed/emp_attrition_cleaned.csv",index=False)
+    df.to_csv(PROCESSED_DATA, index=False)
 
     print("Dataset saved successfully!")
 
@@ -47,6 +66,6 @@ def preprocess_data():
 if __name__ == "__main__":
     try:
         preprocess_data()
+
     except Exception as e:
         print(f"Error: {e}")
-
