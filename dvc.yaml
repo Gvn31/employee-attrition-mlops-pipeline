@@ -1,0 +1,45 @@
+stages:
+  preprocess:
+    cmd: python src/preprocessing.py
+    deps:
+      - src/preprocessing.py
+      - data/raw/emp_attrition_csv.csv
+    outs:
+      - data/processed/emp_attrition_cleaned.csv
+
+  feature_engineering:
+    cmd: python src/feature_engineering.py
+    deps:
+      - src/feature_engineering.py
+      - data/processed/emp_attrition_cleaned.csv
+    outs:
+      - data/processed/emp_attrition_features.csv
+      - models/scaler.pkl 
+      - models/feature_columns.pkl
+
+  train:
+    cmd: python src/train.py
+    deps:
+      - src/train.py
+      - data/processed/emp_attrition_features.csv
+      - models/scaler.pkl
+      - models/feature_columns.pkl
+    outs:
+      - models/logistic_regression.pkl
+      - models/decision_tree.pkl
+      - models/random_forest.pkl
+      - models/xgboost.pkl
+      - mlruns
+
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+      - src/evaluate.py
+      - data/processed/emp_attrition_features.csv
+      - models/logistic_regression.pkl
+      - models/decision_tree.pkl
+      - models/random_forest.pkl
+      - models/xgboost.pkl
+
+    outs:
+      - reports/evaluation_metrics.json
