@@ -16,11 +16,12 @@ from xgboost import XGBClassifier
 import mlflow
 import mlflow.sklearn
 import joblib
+import os
 
 def train_model():
 
     '''
-        Train multiple machine learning models, log experiments
+    Train multiple machine learning models, log experiments
     using MLflow, and save the trained models.
 
     Models:
@@ -34,12 +35,19 @@ def train_model():
     
     '''
 
-    mlflow.set_tracking_uri("../mlruns")
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+    DATA_DIR = os.path.join(BASE_DIR, "data", "processed")
+    MODEL_DIR = os.path.join(BASE_DIR, "models")
+    MLRUNS_DIR = os.path.join(BASE_DIR, "mlruns")
+
+    mlflow.set_tracking_uri(MLRUNS_DIR)
     mlflow.set_experiment("Employee Attrition Prediction")
 
     # Load dataset
     print("Loading dataset...")
-    df=pd.read_csv("../data/processed/emp_attrition_features.csv")
+    df = pd.read_csv(
+    os.path.join(DATA_DIR, "emp_attrition_features.csv"))
 
     # Split dataset
     print("Splitting Datasets........")
@@ -190,10 +198,17 @@ def train_model():
 
         print("XGBoost model trained successfully!")
 
-    joblib.dump(logistic_model,"../models/logistic_regression.pkl")
-    joblib.dump(best_dt_model,"../models/decision_tree.pkl")
-    joblib.dump(best_rf_model,"../models/random_forest.pkl")
-    joblib.dump(best_xgb_model,"../models/xgboost.pkl")
+    joblib.dump(
+    logistic_model,os.path.join(MODEL_DIR, "logistic_regression.pkl"))
+
+    joblib.dump(
+        best_dt_model,os.path.join(MODEL_DIR, "decision_tree.pkl"))
+
+    joblib.dump(
+    best_rf_model,os.path.join(MODEL_DIR, "random_forest.pkl"))
+
+    joblib.dump(
+    best_xgb_model,os.path.join(MODEL_DIR, "xgboost.pkl"))
 
     print("Training completed successfully!")
 
