@@ -4,6 +4,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
+from feast import FeatureStore
 
 from sklearn.metrics import (
     accuracy_score,
@@ -17,6 +18,7 @@ import mlflow
 import mlflow.sklearn
 import joblib
 import os
+
 
 def train_model():
 
@@ -44,17 +46,46 @@ def train_model():
     mlflow.set_tracking_uri(f"file:///{MLRUNS_DIR.replace(os.sep, '/')}")
     mlflow.set_experiment("Employee Attrition Prediction")
 
-    # Load dataset
-    print("Loading dataset...")
-    df = pd.read_csv(
-    os.path.join(DATA_DIR, "emp_attrition_features.csv"))
+    print("Loading Feature Store...")
 
-    # Split dataset
-    print("Splitting Datasets........")
-    x=df.drop(columns=["Attrition"])
-    y=df["Attrition"]
+    store = FeatureStore(
+        repo_path=os.path.join(BASE_DIR, "feature_repo", "feature_repo")
+    )
 
-    x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=42,stratify=y)
+    print("Loading entity dataframe...")
+
+    entity_df = pd.read_parquet(
+            os.path.join(DATA_DIR, "emp_attrition_features.parquet"))
+
+    training_df = store.get_historical_features(entity_df=entity_df[
+                [
+                    "Employee ID",
+                    "event_timestamp",
+                    "Attrition",
+                ]
+            ],features=store.get_feature_service("employee_service"),
+        ).to_df()
+
+    labels = entity_df[
+        [
+            "Employee ID",
+            "event_timestamp",
+            "Attrition",
+        ]
+    ]
+
+    training_df["Attrition"]=entity_df["Attrition"]
+
+    print("Splitting datasets...")
+
+    x = training_df.drop(
+            columns=[
+                "Employee ID",
+                "event_timestamp",
+                "Attrition",])
+
+    y = training_df["Attrition"]
+    x_train, x_test, y_train, y_test = train_test_split(x,y,test_size=0.2,random_state=42,stratify=y,)
 
 #Logistic Regression
     with mlflow.start_run(run_name="Logistic Regression"):
@@ -75,7 +106,6 @@ def train_model():
         mlflow.log_metric("roc_auc", roc_auc_score(y_test, y_prob))
 
         mlflow.sklearn.log_model(logistic_model, "model")
-        mlflow.log_param("model","Logistic Regression")
         print("Logistic Regression model trained successfully!")
 
 #Decision Tree
