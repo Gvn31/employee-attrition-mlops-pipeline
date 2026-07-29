@@ -34,7 +34,7 @@ def evaluate_model():
     # Split dataset
     print("Splitting Dataset...")
 
-    x = df.drop(columns=["Attrition"])
+    x = df.drop(columns=["Employee ID","Attrition"])
     y = df["Attrition"]
 
     x_train, x_test, y_train, y_test = train_test_split(x,y,test_size=0.2,random_state=42,stratify=y)
