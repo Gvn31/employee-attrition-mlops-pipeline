@@ -9,3 +9,4 @@ mlruns/
 logs/
 data/processed/*.csv
 /mlruns
+feature_repo/data/
