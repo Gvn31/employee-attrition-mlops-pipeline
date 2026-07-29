@@ -7,7 +7,5 @@ src/__pycache__
 *.py[cod]
 mlruns/
 logs/
-data/processed/*.csv
-data/processed/*.parquet
 /mlruns
 feature_repo/feature_repo/data/
