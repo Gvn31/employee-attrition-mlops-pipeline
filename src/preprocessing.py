@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import pandas as pd
+from datetime import datetime
 
 # Base project directory
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -54,8 +55,10 @@ def preprocess_data():
     df["Education Level"] = df["Education Level"].str.replace("Masterâ€™s Degree","Master's Degree")
     df["Education Level"] = df["Education Level"].str.replace("Bachelorâ€™s Degree","Bachelor's Degree")
 
-    # Drop Irrelevant Feature
-    df.drop(["Employee ID"], axis=1, inplace=True)
+    # Keep Employee_ID for Feast Entity
+    # df.drop(["Employee ID"], axis=1, inplace=True)
+
+    df["event_timestamp"] = pd.Timestamp.now()
 
     # Save Cleaned Dataset
     df.to_csv(PROCESSED_DATA, index=False)
