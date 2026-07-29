@@ -62,7 +62,7 @@ def transform_features(df, training=True):
 
         joblib.dump(scaler, os.path.join(MODEL_DIR, "scaler.pkl"))
 
-        feature_columns = df.drop(columns=["Attrition"]).columns.tolist()
+        feature_columns = df.drop(columns=["Employee ID", "Attrition","event_timestamp"]).columns.tolist()
 
         joblib.dump(
             feature_columns,
@@ -95,6 +95,7 @@ def feature_engineering():
     df = pd.read_csv(
         os.path.join(DATA_DIR, "emp_attrition_cleaned.csv")
     )
+    df["event_timestamp"] = pd.to_datetime(df["event_timestamp"])
 
     print("Applying feature engineering...")
 
@@ -105,6 +106,11 @@ def feature_engineering():
     df.to_csv(
         os.path.join(DATA_DIR, "emp_attrition_features.csv"),
         index=False
+    )
+
+    df.to_parquet(
+    os.path.join(DATA_DIR, "emp_attrition_features.parquet"),
+    index=False
     )
 
     print("Feature engineering completed successfully!")
