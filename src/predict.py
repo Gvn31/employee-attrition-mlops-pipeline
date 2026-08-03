@@ -1,12 +1,12 @@
 import pandas as pd
-import joblib
+import mlflow
+import mlflow.pyfunc
 import os
 
 from feature_engineering import transform_features
 
 # Base project directory
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MODEL_DIR = os.path.join(BASE_DIR, "models")
 
 def predict():
     """
@@ -17,7 +17,11 @@ def predict():
     """
 
     print("Loading trained model...")
-    model = joblib.load(os.path.join(MODEL_DIR, "xgboost.pkl"))
+    mlflow.set_tracking_uri("http://127.0.0.1:5000")
+
+    model = mlflow.pyfunc.load_model(
+        model_uri="models:/employee_attrition_model/latest"
+    )
 
     print("Loading sample data...")
 
@@ -55,12 +59,12 @@ def predict():
 
     print("\nPredicting...")
 
-    prediction = model.predict(df)
-    probability = model.predict_proba(df)
+    prediction = int(model.predict(df)[0])
+   
 
     print("\nPrediction Result")
 
-    if prediction[0] == 1:
+    if prediction == 1:
         return "Employee is likely to leave the company."
     else:
         return "Employee is likely to stay in the company."

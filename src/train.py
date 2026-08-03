@@ -43,8 +43,10 @@ def train_model():
     MODEL_DIR = os.path.join(BASE_DIR, "models")
     MLRUNS_DIR = os.path.join(BASE_DIR, "mlruns")
 
-    mlflow.set_tracking_uri(f"file:///{MLRUNS_DIR.replace(os.sep, '/')}")
+    mlflow.set_tracking_uri("http://127.0.0.1:5000")
     mlflow.set_experiment("Employee Attrition Prediction")
+    registered_model_name="employee_attrition_model"
+    model_results={}
 
     print("Loading Feature Store...")
 
@@ -106,6 +108,12 @@ def train_model():
         mlflow.log_metric("roc_auc", roc_auc_score(y_test, y_prob))
 
         mlflow.sklearn.log_model(logistic_model, "model")
+
+        model_results["Logistic Regression"] = {
+            'model': logistic_model,
+            'f1' : f1_score(y_test, y_pred),
+            
+        }
         print("Logistic Regression model trained successfully!")
 
 #Decision Tree
@@ -144,6 +152,11 @@ def train_model():
         mlflow.log_metric("roc_auc", roc_auc_score(y_test, y_prob))
 
         mlflow.sklearn.log_model(best_dt_model, "model")
+
+        model_results["Decision Tree"] = {
+            'model': best_dt_model,
+            'f1' : f1_score(y_test, y_pred),
+        }
         mlflow.log_param("model","Decision Tree")
 
         print("Decision Tree model trained successfully!")
@@ -182,6 +195,12 @@ def train_model():
         mlflow.log_metric("roc_auc", roc_auc_score(y_test, y_prob))
 
         mlflow.sklearn.log_model(best_rf_model, "model")
+
+        model_results["Random Forest"] = {
+            'model': best_rf_model,
+            'f1' : f1_score(y_test, y_pred),
+        }
+
         mlflow.log_param("model","Random Forest")
 
         print("Random Forest model trained successfully!")
@@ -224,9 +243,43 @@ def train_model():
         mlflow.log_metric("roc_auc", roc_auc_score(y_test, y_prob))
 
         mlflow.sklearn.log_model(best_xgb_model, "model")
+
+        model_results["XGBoost"] = {
+            'model': best_xgb_model,
+            'f1' : f1_score(y_test, y_pred),
+        }
+
         mlflow.log_param("model","XGBoost")
 
         print("XGBoost model trained successfully!")
+
+#Model Registry
+    best_model_name = max(
+        model_results,
+        key=lambda x: model_results[x]["f1"]
+    )
+
+    best_model = model_results[best_model_name]["model"]
+
+    print(f"\nBest Model: {best_model_name}")
+    print(f"F1 Score : {model_results[best_model_name]['f1']:.4f}")
+
+    with mlflow.start_run(run_name="Best Model Registry"):
+
+        mlflow.log_param("best_model", best_model_name)
+        mlflow.log_metric(
+            "best_f1_score",
+            model_results[best_model_name]["f1"]
+        )
+
+        mlflow.sklearn.log_model(
+            sk_model=best_model,
+            artifact_path="best_model",
+            registered_model_name=registered_model_name,
+        )
+
+    print(f"{best_model_name} registered successfully!"
+          f"as {registered_model_name}")
 
     joblib.dump(
     logistic_model,os.path.join(MODEL_DIR, "logistic_regression.pkl"))

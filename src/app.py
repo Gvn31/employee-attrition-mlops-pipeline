@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 import pandas as pd
-import joblib
+import mlflow
+import mlflow.sklearn
 import os
 from datetime import datetime
 
@@ -18,7 +19,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Load trained model
 print("Loading trained model...")
-model = joblib.load(os.path.join(BASE_DIR, "models", "xgboost.pkl"))
+mlflow.set_tracking_uri("http://127.0.0.1:5000")
+model=mlflow.sklearn.load_model(
+    model_uri="models:/employee_attrition_model/latest"
+    )
 
 # Log file path
 LOG_FILE = os.path.join(BASE_DIR, "logs", "prediction_logs.csv")
