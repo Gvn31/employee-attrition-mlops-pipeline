@@ -9,3 +9,5 @@ mlruns/
 logs/
 /mlruns
 feature_repo/feature_repo/data/
+mlflow.db
+logs/prediction_logs.csv
