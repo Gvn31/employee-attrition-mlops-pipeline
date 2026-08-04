@@ -3,6 +3,7 @@ import pandas as pd
 
 from evidently import Report
 from evidently.presets import DataDriftPreset
+from evidently.ui.workspace import Workspace
 
 
 def monitor():
@@ -18,6 +19,9 @@ def monitor():
 
     #Reports Directory
     REPORT_DIR=os.path.join(BASE_DIR, "monitoring", "reports")
+
+    WORKSPACE_PATH=os.path.join(BASE_DIR, "evidently_workspace")
+    PROJECT_ID="019fcb74-03a7-765c-a08b-4ceeb0989498"
 
     os.makedirs(REPORT_DIR, exist_ok=True)
 
@@ -57,7 +61,14 @@ def monitor():
     snapshot = drift_report.run(
     reference_data=reference_data,
     current_data=current_data
-)
+    )
+
+    print("Uploading report to Evidently workspace.........")
+    workspace=Workspace(WORKSPACE_PATH)
+    workspace.add_run(
+        PROJECT_ID,snapshot,name="Employee Attrition Drift Report"
+    )
+    print("Report Uploaded Successfully!")
 
     report_path = os.path.join(REPORT_DIR, "data_drift_report.html")
     snapshot.save_html(report_path) 
