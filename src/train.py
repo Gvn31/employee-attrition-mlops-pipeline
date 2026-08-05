@@ -59,32 +59,42 @@ def train_model():
     entity_df = pd.read_parquet(
             os.path.join(DATA_DIR, "emp_attrition_features.parquet"))
 
+    entity_df["event_timestamp"] = pd.to_datetime(
+    entity_df["event_timestamp"],
+    utc=True)
+
+
     training_df = store.get_historical_features(entity_df=entity_df[
                 [
                     "Employee ID",
-                    "event_timestamp",
-                    "Attrition",
+                    "event_timestamp", 
                 ]
             ],features=store.get_feature_service("employee_service"),
         ).to_df()
+
+
 
     labels = entity_df[
         [
             "Employee ID",
             "event_timestamp",
-            "Attrition",
+            "Attrition"
         ]
     ]
 
-    training_df["Attrition"]=entity_df["Attrition"]
-
+    training_df=training_df.merge(
+        labels, on=["Employee ID","event_timestamp"],
+          how="left"
+    )
+    # print(training_df.columns.tolist())
+    # print(training_df["Attrition"].isnull().sum())
     print("Splitting datasets...")
 
     x = training_df.drop(
             columns=[
                 "Employee ID",
                 "event_timestamp",
-                "Attrition",])
+                "Attrition"])
 
     y = training_df["Attrition"]
     x_train, x_test, y_train, y_test = train_test_split(x,y,test_size=0.2,random_state=42,stratify=y,)
