@@ -7,7 +7,13 @@ src/__pycache__
 *.py[cod]
 mlruns/
 logs/
-/mlruns
+/mlruns/
 feature_repo/feature_repo/data/
 mlflow.db
 logs/prediction_logs.csv
+evaluation/*.json
+evaluation/confusion_matrices/
+evaluation/roc_curves/
+evidently_workspace/
+monitoring/reports/
+mlflow.db
