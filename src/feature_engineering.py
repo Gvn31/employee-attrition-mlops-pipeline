@@ -103,6 +103,11 @@ def feature_engineering():
 
     print("Saving feature engineered dataset...")
 
+    # print(df.shape)
+    # print(df.head())
+    # print(df["Attrition"].value_counts())
+    # print(df.isnull().sum().sum())
+
     df.to_csv(
         os.path.join(DATA_DIR, "emp_attrition_features.csv"),
         index=False
