@@ -14,6 +14,7 @@ stages:
       - data/processed/emp_attrition_cleaned.csv
     outs:
       - data/processed/emp_attrition_features.csv
+      - data/processed/emp_attrition_features.parquet
       - models/scaler.pkl 
       - models/feature_columns.pkl
 
@@ -21,7 +22,8 @@ stages:
     cmd: python src/train.py
     deps:
       - src/train.py
-      - data/processed/emp_attrition_features.csv
+      - feature_repo/feature_repo/feature_views.py
+      - data/processed/emp_attrition_features.parquet
       - models/scaler.pkl
       - models/feature_columns.pkl
     outs:
@@ -40,3 +42,8 @@ stages:
       - models/decision_tree.pkl
       - models/random_forest.pkl
       - models/xgboost.pkl
+    
+    outs:
+      - evaluation/metrics.json
+      - evaluation/classification_reports.json
+      - evaluation/champion_model.json
