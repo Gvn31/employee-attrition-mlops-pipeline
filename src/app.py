@@ -4,7 +4,8 @@ import mlflow
 import mlflow.sklearn
 import os
 from datetime import datetime
-
+import joblib
+import json
 from src.feature_engineering import transform_features
 
 # Create FastAPI application
@@ -19,10 +20,33 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Load trained model
 print("Loading trained model...")
-mlflow.set_tracking_uri("http://127.0.0.1:5000")
-model=mlflow.sklearn.load_model(
-    model_uri="models:/employee_attrition_model/latest"
+# mlflow.set_tracking_uri("http://host.docker.internal:5000")
+
+champion_path=os.path.join(
+    BASE_DIR,"evaluation","champion_model.json"
     )
+
+if not os.path.exists(champion_path):
+    raise FileNotFoundError(
+        "champion_model.json not found."
+    )
+with open(champion_path,"r") as f:
+    champion=json.load(f)
+
+
+model_map={
+    "Logistic Regression": "logistic_regression.pkl",
+    "Decision Tree" : "decision_tree.pkl",
+    "Random Forest": "random_forest.pkl",
+    "XGBoost": "xgboost.pkl"}
+
+model_name=champion["best_model"]
+
+if model_name not in model_map:
+    raise ValueError(f"Unknown champion model: {model_name}")
+model =joblib.load(
+    os.path.join(BASE_DIR,"models",model_map[model_name])
+)
 
 # Log file path
 LOG_FILE = os.path.join(BASE_DIR, "logs", "prediction_logs.csv")
