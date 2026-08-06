@@ -1,15 +1,17 @@
 import os
+import sys
 import pandas as pd
-
+import json
 from evidently import Report
 from evidently.presets import DataDriftPreset
 from evidently.ui.workspace import Workspace
+from src.retrain import retrain_model
 
 
 def monitor():
     #Base project directory
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+    sys.path.insert(0, BASE_DIR)
     #Reference dataset(tarining data)
     REFERENCE_DATA=os.path.join(BASE_DIR, "data", "processed", "emp_attrition_features.parquet")
 
@@ -58,23 +60,63 @@ def monitor():
         metrics=[DataDriftPreset()]
     )
 
+    #Generate Report
+
     snapshot = drift_report.run(
     reference_data=reference_data,
     current_data=current_data
     )
-
     print("Uploading report to Evidently workspace.........")
+    
     workspace=Workspace(WORKSPACE_PATH)
     workspace.add_run(
-        PROJECT_ID,snapshot,name="Employee Attrition Drift Report"
-    )
+            PROJECT_ID,snapshot,name="Employee Attrition Drift Report"
+        )
+    
     print("Report Uploaded Successfully!")
-
+    
     report_path = os.path.join(REPORT_DIR, "data_drift_report.html")
     snapshot.save_html(report_path) 
-
+    
     print(f"Report saved at: {report_path}")
+    
+    #Check for Drift
 
+
+    result=snapshot.dict()
+    print(json.dumps(result, indent=2)[:5000])
+    drift_info=next((
+        metric["value"]
+        for metric in result["metrics"]
+        if metric["metric_id"].startswith("DriftedColumnsCount")
+
+    ),None,)
+
+    if drift_info is None:
+        raise ValueError("Couldn't find DriftedColumnsCount metric")
+
+    drift_share=drift_info["share"]
+    print(f"Drift share: {drift_share*100:.2f}%")
+
+    DRIFT_THRESHOLD=0.5  # Retrain if 50% or more columns drift
+
+    if drift_share>=DRIFT_THRESHOLD:
+        print("\nDrift detected!")
+        print("Starting Retraining Pipeline.........")
+
+        try:
+            retrain_model()
+            print("Retraining Completed!")
+        except Exception as e:
+            print(f"Retraining Failed: {e}")
+
+    else:
+        print("\nNo Drift detected!")
+      
+     
+
+   
+    
 if __name__=="__main__":
     try:
         monitor()
