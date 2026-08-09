@@ -10,3 +10,5 @@ fastapi
 dvc
 feast==0.40.1
 evidently==0.7.14
+prometheus-client
+prometheus-fastapi-instrumentator
