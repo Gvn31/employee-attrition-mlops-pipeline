@@ -5,10 +5,13 @@ on:
     branches:
       - main
 
+  schedule:
+    - cron: "0 */6 * * *"
+
   workflow_dispatch:
     inputs:
       retrain:
-        description: "Run model retraining"
+        description: "Force model retraining"
         required: false
         default: false
         type: boolean
@@ -38,7 +41,7 @@ jobs:
       # 4. Tests
       - name: Run Tests
         run: |
-          python -m compileall src
+          python -m compileall src monitoring
 
       # 5. Start MLflow
       - name: Start MLflow
@@ -66,7 +69,7 @@ jobs:
         run: |
           python src/evaluate.py
 
-      # 10. Build
+      # 10. Build Docker Image
       - name: Build Docker Image
         run: |
           docker build -t employee-attrition-api .
@@ -82,8 +85,22 @@ jobs:
           sleep 10
           curl --fail http://localhost:8000/health
 
-      # 13. Retrain
-      - name: Retrain Model
-        if: ${{ github.event_name == 'workflow_dispatch' && inputs.retrain == true }}
+      # 13. Data Drift Check
+      - name: Check Data Drift
         run: |
-          python src/retrain.py
+          python monitoring/drift_check.py
+
+      # 14. Performance Check
+      - name: Check Model Performance
+        run: |
+          python monitoring/performance_check.py
+
+      # 15. Automatic Retraining
+      - name: Automatic Retraining
+        run: |
+          python monitoring/retrain_trigger.py
+
+      # 16. Redeploy Retrained Model
+      - name: Redeploy After Retraining
+        run: |
+          docker compose up -d --build api
