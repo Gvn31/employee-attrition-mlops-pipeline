@@ -5,32 +5,85 @@ on:
     branches:
       - main
 
+  workflow_dispatch:
+    inputs:
+      retrain:
+        description: "Run model retraining"
+        required: false
+        default: false
+        type: boolean
+
 jobs:
-  build-and-test:
+  mlops-pipeline:
     runs-on: ubuntu-latest
 
     steps:
+
+      # 1. Checkout
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      # 2. Python
       - name: Set Up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
+      # 3. Dependencies
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Verify Required Libraries
+      # 4. Tests
+      - name: Run Tests
         run: |
-          python -c "import pandas"
-          python -c "import sklearn"
-          python -c "import xgboost"
-          python -c "import fastapi"
-          python -c "import mlflow"
+          python -m compileall src
 
+      # 5. Start MLflow
+      - name: Start MLflow
+        run: |
+          docker compose up -d mlflow
+          sleep 15
+
+      # 6. Data Pipeline
+      - name: Run Data Pipeline
+        run: |
+          python src/preprocessing.py
+
+      # 7. Feature Pipeline
+      - name: Run Feature Engineering
+        run: |
+          python src/feature_engineering.py
+
+      # 8. Train Model
+      - name: Train Model
+        run: |
+          python src/train.py
+
+      # 9. Evaluate Model
+      - name: Evaluate Model
+        run: |
+          python src/evaluate.py
+
+      # 10. Build
       - name: Build Docker Image
         run: |
           docker build -t employee-attrition-api .
+
+      # 11. Deploy
+      - name: Deploy Application
+        run: |
+          docker compose up -d --build api
+
+      # 12. Monitor
+      - name: Check API Health
+        run: |
+          sleep 10
+          curl --fail http://localhost:8000/health
+
+      # 13. Retrain
+      - name: Retrain Model
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.retrain == true }}
+        run: |
+          python src/retrain.py
