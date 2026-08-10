@@ -1,0 +1,336 @@
+{
+    "drift_detected": true,
+    "drift_threshold": 0.2,
+    "total_features": 56,
+    "drifted_features": 46,
+    "drifted_feature_names": [
+        "Age",
+        "Company Reputation_Excellent",
+        "Company Reputation_Fair",
+        "Company Reputation_Good",
+        "Company Size_Large",
+        "Company Size_Medium",
+        "Company Size_Small",
+        "Company Tenure (In Months)",
+        "Distance from Home",
+        "Education Level_Associate Degree",
+        "Education Level_Bachelor's Degree",
+        "Education Level_High School",
+        "Education Level_Master's Degree",
+        "Education Level_PhD",
+        "Employee Recognition_High",
+        "Employee Recognition_Medium",
+        "Employee Recognition_Very High",
+        "Gender_Female",
+        "Gender_Male",
+        "Innovation Opportunities_No",
+        "Innovation Opportunities_Yes",
+        "Job Level_Entry",
+        "Job Level_Senior",
+        "Job Role_Education",
+        "Job Role_Healthcare",
+        "Job Role_Media",
+        "Job Role_Technology",
+        "Job Satisfaction_High",
+        "Job Satisfaction_Low",
+        "Job Satisfaction_Medium",
+        "Job Satisfaction_Very High",
+        "Leadership Opportunities_No",
+        "Leadership Opportunities_Yes",
+        "Marital Status_Married",
+        "Marital Status_Single",
+        "Monthly Income",
+        "Number of Promotions",
+        "Performance Rating_Average",
+        "Performance Rating_Below Average",
+        "Performance Rating_High",
+        "Performance Rating_Low",
+        "Remote Work_No",
+        "Remote Work_Yes",
+        "Work-Life Balance_Excellent",
+        "Work-Life Balance_Fair",
+        "Years at Company"
+    ],
+    "feature_results": {
+        "Age": {
+            "reference_mean": 2.1145174973558245e-16,
+            "current_mean": -0.6306727034946426,
+            "drift_score": 0.6306684706640975
+        },
+        "Company Reputation_Excellent": {
+            "reference_mean": 0.09951945018658219,
+            "current_mean": 0.0,
+            "drift_score": 0.33244048014086974
+        },
+        "Company Reputation_Fair": {
+            "reference_mean": 0.19847512684904292,
+            "current_mean": 0.0,
+            "drift_score": 0.49761289640539214
+        },
+        "Company Reputation_Good": {
+            "reference_mean": 0.49910064699723483,
+            "current_mean": 0.36363636363636365,
+            "drift_score": 0.27092718662587956
+        },
+        "Company Reputation_Poor": {
+            "reference_mean": 0.20290477596714004,
+            "current_mean": 0.18181818181818182,
+            "drift_score": 0.05243270773996991
+        },
+        "Company Size_Large": {
+            "reference_mean": 0.2001664474214073,
+            "current_mean": 0.09090909090909091,
+            "drift_score": 0.27305637710654423
+        },
+        "Company Size_Medium": {
+            "reference_mean": 0.49975838277537654,
+            "current_mean": 0.36363636363636365,
+            "drift_score": 0.2722422428680435
+        },
+        "Company Size_Small": {
+            "reference_mean": 0.3000751698032162,
+            "current_mean": 0.5454545454545454,
+            "drift_score": 0.5354197805274282
+        },
+        "Company Tenure (In Months)": {
+            "reference_mean": -8.29783591655195e-18,
+            "current_mean": -0.7601879012802771,
+            "drift_score": 0.760182799193964
+        },
+        "Distance from Home": {
+            "reference_mean": 3.1331483891808225e-17,
+            "current_mean": 1.3404114975150418,
+            "drift_score": 1.340402501193022
+        },
+        "Education Level_Associate Degree": {
+            "reference_mean": 0.2503288678890708,
+            "current_mean": 0.0,
+            "drift_score": 0.5778527161757144
+        },
+        "Education Level_Bachelor's Degree": {
+            "reference_mean": 0.29975301350371825,
+            "current_mean": 0.45454545454545453,
+            "drift_score": 0.33786206412198044
+        },
+        "Education Level_High School": {
+            "reference_mean": 0.19705226985959354,
+            "current_mean": 0.0,
+            "drift_score": 0.49538650171350535
+        },
+        "Education Level_Master's Degree": {
+            "reference_mean": 0.20162957394829392,
+            "current_mean": 0.5454545454545454,
+            "drift_score": 0.8569493705149654
+        },
+        "Education Level_PhD": {
+            "reference_mean": 0.051236274799323474,
+            "current_mean": 0.0,
+            "drift_score": 0.2323843208352732
+        },
+        "Employee Recognition_High": {
+            "reference_mean": 0.2489999731536417,
+            "current_mean": 0.45454545454545453,
+            "drift_score": 0.4753192385074536
+        },
+        "Employee Recognition_Low": {
+            "reference_mean": 0.3975945662970818,
+            "current_mean": 0.45454545454545453,
+            "drift_score": 0.11636782756696275
+        },
+        "Employee Recognition_Medium": {
+            "reference_mean": 0.30412896990523236,
+            "current_mean": 0.09090909090909091,
+            "drift_score": 0.46348053957020635
+        },
+        "Employee Recognition_Very High": {
+            "reference_mean": 0.04927649064404414,
+            "current_mean": 0.0,
+            "drift_score": 0.22766163682225277
+        },
+        "Gender_Female": {
+            "reference_mean": 0.45198528819565625,
+            "current_mean": 0.18181818181818182,
+            "drift_score": 0.5428393204679614
+        },
+        "Gender_Male": {
+            "reference_mean": 0.5480147118043437,
+            "current_mean": 0.8181818181818182,
+            "drift_score": 0.5428393204679616
+        },
+        "Innovation Opportunities_No": {
+            "reference_mean": 0.8375258396198556,
+            "current_mean": 0.45454545454545453,
+            "drift_score": 1.0382031889690253
+        },
+        "Innovation Opportunities_Yes": {
+            "reference_mean": 0.16247416038014442,
+            "current_mean": 0.5454545454545454,
+            "drift_score": 1.038203188969025
+        },
+        "Job Level_Entry": {
+            "reference_mean": 0.3997422749604016,
+            "current_mean": 0.2727272727272727,
+            "drift_score": 0.2592944293412437
+        },
+        "Job Level_Mid": {
+            "reference_mean": 0.3983731106875352,
+            "current_mean": 0.36363636363636365,
+            "drift_score": 0.07095411763981015
+        },
+        "Job Level_Senior": {
+            "reference_mean": 0.20188461435206315,
+            "current_mean": 0.09090909090909091,
+            "drift_score": 0.27646479398416
+        },
+        "Job Role_Education": {
+            "reference_mean": 0.21018013906413596,
+            "current_mean": 0.0,
+            "drift_score": 0.5158564884936062
+        },
+        "Job Role_Finance": {
+            "reference_mean": 0.1402453757147843,
+            "current_mean": 0.09090909090909091,
+            "drift_score": 0.14207968721400313
+        },
+        "Job Role_Healthcare": {
+            "reference_mean": 0.22918736073451637,
+            "current_mean": 0.0,
+            "drift_score": 0.5452780343989488
+        },
+        "Job Role_Media": {
+            "reference_mean": 0.16102445703240356,
+            "current_mean": 0.0,
+            "drift_score": 0.43809506038720136
+        },
+        "Job Role_Technology": {
+            "reference_mean": 0.25936266745415987,
+            "current_mean": 0.9090909090909091,
+            "drift_score": 1.4824235241636912
+        },
+        "Job Satisfaction_High": {
+            "reference_mean": 0.499946307283417,
+            "current_mean": 0.36363636363636365,
+            "drift_score": 0.2726180591470391
+        },
+        "Job Satisfaction_Low": {
+            "reference_mean": 0.10009664688984939,
+            "current_mean": 0.2727272727272727,
+            "drift_score": 0.5751845744546565
+        },
+        "Job Satisfaction_Medium": {
+            "reference_mean": 0.19754892748798625,
+            "current_mean": 0.36363636363636365,
+            "drift_score": 0.4171451967232261
+        },
+        "Job Satisfaction_Very High": {
+            "reference_mean": 0.20240811833874736,
+            "current_mean": 0.0,
+            "drift_score": 0.503756527386554
+        },
+        "Leadership Opportunities_No": {
+            "reference_mean": 0.9509651265805793,
+            "current_mean": 0.5454545454545454,
+            "drift_score": 1.8778653621937393
+        },
+        "Leadership Opportunities_Yes": {
+            "reference_mean": 0.04903487341942066,
+            "current_mean": 0.45454545454545453,
+            "drift_score": 1.8778653621937393
+        },
+        "Marital Status_Divorced": {
+            "reference_mean": 0.14870197857660608,
+            "current_mean": 0.09090909090909091,
+            "drift_score": 0.16243226283345794
+        },
+        "Marital Status_Married": {
+            "reference_mean": 0.5022819404547774,
+            "current_mean": 0.18181818181818182,
+            "drift_score": 0.6409298906182884
+        },
+        "Marital Status_Single": {
+            "reference_mean": 0.3490160809686166,
+            "current_mean": 0.7272727272727273,
+            "drift_score": 0.7935527551446601
+        },
+        "Monthly Income": {
+            "reference_mean": 1.08205687900324e-16,
+            "current_mean": 10.12353176329753,
+            "drift_score": 10.123463818079296
+        },
+        "Number of Dependents": {
+            "reference_mean": 6.676419702972833e-18,
+            "current_mean": 0.15924366554292993,
+            "drift_score": 0.15924259676121813
+        },
+        "Number of Promotions": {
+            "reference_mean": 2.5847281992937682e-17,
+            "current_mean": 0.8985770088639801,
+            "drift_score": 0.8985709779636586
+        },
+        "Overtime_No": {
+            "reference_mean": 0.6732663964133265,
+            "current_mean": 0.6363636363636364,
+            "drift_score": 0.07868021967008548
+        },
+        "Overtime_Yes": {
+            "reference_mean": 0.32673360358667347,
+            "current_mean": 0.36363636363636365,
+            "drift_score": 0.07868021967008548
+        },
+        "Performance Rating_Average": {
+            "reference_mean": 0.6002711482187442,
+            "current_mean": 0.0,
+            "drift_score": 1.225428769201009
+        },
+        "Performance Rating_Below Average": {
+            "reference_mean": 0.14952079250449676,
+            "current_mean": 0.0,
+            "drift_score": 0.41929147270950967
+        },
+        "Performance Rating_High": {
+            "reference_mean": 0.2001396010631158,
+            "current_mean": 0.7272727272727273,
+            "drift_score": 1.3174792432597757
+        },
+        "Performance Rating_Low": {
+            "reference_mean": 0.05006845821364332,
+            "current_mean": 0.2727272727272727,
+            "drift_score": 1.0209599697065554
+        },
+        "Remote Work_No": {
+            "reference_mean": 0.8094177024886574,
+            "current_mean": 0.36363636363636365,
+            "drift_score": 1.1349881862190965
+        },
+        "Remote Work_Yes": {
+            "reference_mean": 0.1905822975113426,
+            "current_mean": 0.6363636363636364,
+            "drift_score": 1.1349881862190965
+        },
+        "Work-Life Balance_Excellent": {
+            "reference_mean": 0.18030014228569893,
+            "current_mean": 0.0,
+            "drift_score": 0.46899443560501103
+        },
+        "Work-Life Balance_Fair": {
+            "reference_mean": 0.3024108029745765,
+            "current_mean": 0.0,
+            "drift_score": 0.6584091574857291
+        },
+        "Work-Life Balance_Good": {
+            "reference_mean": 0.37796987838599694,
+            "current_mean": 0.36363636363636365,
+            "drift_score": 0.029560752106042854
+        },
+        "Work-Life Balance_Poor": {
+            "reference_mean": 0.13931917635372762,
+            "current_mean": 0.18181818181818182,
+            "drift_score": 0.12272960591966796
+        },
+        "Years at Company": {
+            "reference_mean": -9.382754118285035e-17,
+            "current_mean": -1.0038658617290248,
+            "drift_score": 1.0038591241707648
+        }
+    }
+}
