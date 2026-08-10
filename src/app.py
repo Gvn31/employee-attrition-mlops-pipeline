@@ -185,13 +185,20 @@ def predict(employee: dict):
     start_time = time.time()
 
     try:
-        
+        # Get Employee ID for tracking
+        employee_id = employee.get("Employee ID")
+
         # Convert input to DataFrame
         df = pd.DataFrame([employee])
+
+        # Employee ID is only for tracking, not for prediction
+        if "Employee ID" in df.columns:
+            df = df.drop(columns=["Employee ID"])
 
         try:
             # Apply feature engineering
             df = transform_features(df, training=False)
+
             
         except Exception as e:
             FEATURE_ENGINEERING_FAILURES.inc()
@@ -267,4 +274,53 @@ def predict(employee: dict):
             time.time() - start_time
             )
 
+
+@app.post("/feedback")
+def feedback(employee_id: int, actual_attrition: int):
+
+    if actual_attrition not in [0, 1]:
+        raise HTTPException(
+            status_code=400,
+            detail="actual_attrition must be 0 or 1"
+        )
+
+    if not os.path.exists(LOG_FILE):
+        raise HTTPException(
+            status_code=404,
+            detail="Prediction log not found"
+        )
+
+    logs = pd.read_csv(LOG_FILE)
+
+    if "Employee ID" not in logs.columns:
+        raise HTTPException(
+            status_code=400,
+            detail="Employee ID not available in prediction logs"
+        )
+
+    matching_rows = logs[
+        logs["Employee ID"] == employee_id
+    ]
+
+    if matching_rows.empty:
+        raise HTTPException(
+            status_code=404,
+            detail="Prediction for employee not found"
+        )
+
+    logs.loc[
+        logs["Employee ID"] == employee_id,
+        "Actual_Attrition"
+    ] = actual_attrition
+
+    logs.to_csv(
+        LOG_FILE,
+        index=False
+    )
+
+    return {
+        "message": "Actual outcome recorded successfully",
+        "Employee ID": employee_id,
+        "Actual_Attrition": actual_attrition
+    }
  
