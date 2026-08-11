@@ -62,6 +62,7 @@ def preprocess_data():
 
     # Save Cleaned Dataset
     df.to_csv(PROCESSED_DATA, index=False)
+    os.makedirs(PROCESSED_DIR, exist_ok=True)
 
     print("Dataset saved successfully!")
 
@@ -72,3 +73,4 @@ if __name__ == "__main__":
 
     except Exception as e:
         print(f"Error: {e}")
+        raise
