@@ -42,7 +42,7 @@ jobs:
       # 4. Pull DVC Data
       - name: Pull DVC Data
         run: |
-          dvc pull
+          dvc pull --force
 
       # 5. Verify Raw Data
       - name: Verify Raw Data
