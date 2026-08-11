@@ -60,9 +60,11 @@ def preprocess_data():
 
     df["event_timestamp"] = pd.Timestamp.now()
 
+    #Create processed directory if it doesn't exist
+    os.makedirs(os.path.dirname(PROCESSED_DATA), exist_ok=True)
     # Save Cleaned Dataset
     df.to_csv(PROCESSED_DATA, index=False)
-    os.makedirs(PROCESSED_DIR, exist_ok=True)
+   
 
     print("Dataset saved successfully!")
 
