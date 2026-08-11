@@ -37,24 +37,40 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install dvc
 
-      # 4. Tests
+      # 4. Pull DVC Data
+      - name: Pull DVC Data
+        run: |
+          dvc pull
+
+      # 5. Verify Raw Data
+      - name: Verify Raw Data
+        run: |
+          echo "===== RAW DATA ====="
+          ls -lh data/raw
+
+          test -f data/raw/emp_attrition_csv.csv
+
+          echo "Raw dataset available."
+
+      # 6. Tests
       - name: Run Tests
         run: |
           python -m compileall src monitoring
 
-      # 5. Start MLflow
+      # 7. Start MLflow
       - name: Start MLflow
         run: |
           docker compose up -d mlflow
           sleep 15
 
-      # 6. Data Pipeline
+      # 8. Data Pipeline
       - name: Run Data Pipeline
         run: |
           python src/preprocessing.py
 
-      # 6.1 Verify Processed Data
+      # 8.1 Verify Processed Data
       - name: Verify Processed Data
         run: |
           echo "===== PROCESSED DATA ====="
@@ -64,12 +80,12 @@ jobs:
 
           echo "Cleaned dataset created successfully."
 
-      # 7. Feature Pipeline
+      # 9. Feature Pipeline
       - name: Run Feature Engineering
         run: |
           python src/feature_engineering.py
 
-      # 7.1 Verify Feature Dataset
+      # 9.1 Verify Feature Dataset
       - name: Verify Feature Dataset
         run: |
           echo "===== FEATURE DATA ====="
@@ -79,12 +95,12 @@ jobs:
 
           echo "Feature dataset created successfully."
 
-      # 8. Train Model
+      # 10. Train Model
       - name: Train Model
         run: |
           python src/train.py
 
-      # 9. Verify Trained Models
+      # 11. Verify Trained Models
       - name: Verify Trained Models
         run: |
           echo "===== MODEL FILES ====="
@@ -97,7 +113,7 @@ jobs:
 
           echo "All trained model files exist."
 
-      # 10. Evaluate Model
+      # 12. Evaluate Model
       - name: Evaluate Model
         run: |
           python src/evaluate.py
@@ -108,12 +124,12 @@ jobs:
           echo "===== CHAMPION MODEL ====="
           cat evaluation/champion_model.json
 
-      # 11. Build Docker Image
+      # 13. Build Docker Image
       - name: Build Docker Image
         run: |
           docker build -t employee-attrition-api .
 
-      # 12. Deploy
+      # 14. Deploy
       - name: Deploy Application
         run: |
           docker compose up -d --build api
@@ -122,10 +138,11 @@ jobs:
 
           docker compose logs api
 
-      # 13. Monitor
+      # 15. Monitor API Health
       - name: Check API Health
         run: |
           for i in {1..12}; do
+
             if curl --fail http://localhost:8000/health; then
               echo "API is healthy"
               exit 0
@@ -133,6 +150,7 @@ jobs:
 
             echo "Waiting for API..."
             sleep 5
+
           done
 
           echo "API failed to become healthy"
@@ -142,17 +160,17 @@ jobs:
 
           exit 1
 
-      # 14. Data Drift Check
+      # 16. Data Drift Check
       - name: Check Data Drift
         run: |
           python monitoring/drift_check.py
 
-      # 15. Performance Check
+      # 17. Performance Check
       - name: Check Model Performance
         run: |
           python monitoring/performance_check.py
 
-      # 16. Automatic / Manual Retraining
+      # 18. Automatic / Manual Retraining
       - name: Automatic Retraining
         id: retraining
         run: |
@@ -171,10 +189,11 @@ jobs:
 
           fi
 
-      # 17. Redeploy Retrained Model
+      # 19. Redeploy Retrained Model
       - name: Redeploy After Retraining
         if: steps.retraining.outputs.retraining_triggered == 'true'
         run: |
+
           echo "Redeploying retrained model..."
 
           docker compose up -d --build api
