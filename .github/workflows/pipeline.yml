@@ -54,10 +54,30 @@ jobs:
         run: |
           python src/preprocessing.py
 
+      # 6.1 Verify Processed Data
+      - name: Verify Processed Data
+        run: |
+          echo "===== PROCESSED DATA ====="
+          ls -lh data/processed
+
+          test -f data/processed/emp_attrition_cleaned.csv
+
+          echo "Cleaned dataset created successfully."
+
       # 7. Feature Pipeline
       - name: Run Feature Engineering
         run: |
           python src/feature_engineering.py
+
+      # 7.1 Verify Feature Dataset
+      - name: Verify Feature Dataset
+        run: |
+          echo "===== FEATURE DATA ====="
+          ls -lh data/processed
+
+          test -f data/processed/emp_attrition_features.parquet
+
+          echo "Feature dataset created successfully."
 
       # 8. Train Model
       - name: Train Model
@@ -77,7 +97,6 @@ jobs:
 
           echo "All trained model files exist."
 
-          
       # 10. Evaluate Model
       - name: Evaluate Model
         run: |
@@ -88,7 +107,7 @@ jobs:
 
           echo "===== CHAMPION MODEL ====="
           cat evaluation/champion_model.json
-          
+
       # 11. Build Docker Image
       - name: Build Docker Image
         run: |
@@ -98,7 +117,9 @@ jobs:
       - name: Deploy Application
         run: |
           docker compose up -d --build api
+
           docker compose ps
+
           docker compose logs api
 
       # 13. Monitor
@@ -115,8 +136,10 @@ jobs:
           done
 
           echo "API failed to become healthy"
+
           docker compose ps -a
           docker compose logs api
+
           exit 1
 
       # 14. Data Drift Check
@@ -129,20 +152,33 @@ jobs:
         run: |
           python monitoring/performance_check.py
 
-      # 16. Automatic Retraining/Manual Retraining
+      # 16. Automatic / Manual Retraining
       - name: Automatic Retraining
         id: retraining
         run: |
+
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.retrain }}" = "true" ]; then
+
             echo "Manual retraining requested."
+
             python -m src.retrain
+
             echo "retraining_triggered=true" >> "$GITHUB_OUTPUT"
+
           else
+
             python monitoring/retrain_trigger.py
+
           fi
 
       # 17. Redeploy Retrained Model
       - name: Redeploy After Retraining
         if: steps.retraining.outputs.retraining_triggered == 'true'
         run: |
+          echo "Redeploying retrained model..."
+
           docker compose up -d --build api
+
+          docker compose ps
+
+          echo "Retrained model deployed successfully."
