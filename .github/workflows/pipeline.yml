@@ -95,12 +95,20 @@ jobs:
         run: |
           python monitoring/performance_check.py
 
-      # 15. Automatic Retraining
+      # 15. Automatic Retraining/Manual Retraining
       - name: Automatic Retraining
+        id: retraining
         run: |
-          python monitoring/retrain_trigger.py
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.retrain }}" = "true" ]; then
+            echo "Manual retraining requested."
+            python -m src.retrain
+            echo "retraining_triggered=true" >> "$GITHUB_OUTPUT"
+          else
+            python monitoring/retrain_trigger.py
+          fi
 
       # 16. Redeploy Retrained Model
       - name: Redeploy After Retraining
+        if: steps.retraining.outputs.retraining_triggered == 'true'
         run: |
           docker compose up -d --build api

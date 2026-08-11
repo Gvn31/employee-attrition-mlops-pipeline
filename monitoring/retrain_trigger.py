@@ -1,79 +1,64 @@
 import os
-import json
-import subprocess
 import sys
+import subprocess
+import json
 
 
+BASE_DIR = os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))
+)
 
-# Project paths
+PERFORMANCE_REPORT = os.path.join(
+    BASE_DIR,
+    "monitoring",
+    "performance_report.json"
+)
+
+DRIFT_REPORT = os.path.join(
+    BASE_DIR,
+    "monitoring",
+    "drift_report.json"
+)
 
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+def check_retraining_condition():
 
-MONITORING_DIR = os.path.join(BASE_DIR,"monitoring")
+    retrain_reasons = []
 
-PERFORMANCE_REPORT = os.path.join(MONITORING_DIR,"performance_report.json")
+    # Check performance
 
-DRIFT_REPORT = os.path.join(MONITORING_DIR,"drift_report.json")
 
-RETRAIN_SCRIPT = os.path.join(BASE_DIR,"src","retrain.py")
+    if os.path.exists(PERFORMANCE_REPORT):
 
-# Check performance
+        with open(PERFORMANCE_REPORT, "r") as f:
+            performance = json.load(f)
 
-def check_performance():
+        if performance.get("retrain_required", False):
+            retrain_reasons.append(
+                "Model performance dropped"
+            )
 
-    if not os.path.exists(PERFORMANCE_REPORT):
-
+    else:
         print("Performance report not found.")
-        return False
 
-    with open(PERFORMANCE_REPORT,"r") as file:
-        report = json.load(file)
-
-    retraining_required = report.get("retraining_required",False)
-
-    if retraining_required:
-
-        print("Performance drop detected.")
-
-        return True
-
-    print("Model performance is healthy.")
-
-    return False
+    # Check data drift
 
 
-# --------------------------------------------------
-# Check data drift
-# --------------------------------------------------
+    if os.path.exists(DRIFT_REPORT):
 
-def check_drift():
+        with open(DRIFT_REPORT, "r") as f:
+            drift = json.load(f)
 
-    if not os.path.exists(DRIFT_REPORT):
+        if drift.get("drift_detected", False):
+            retrain_reasons.append(
+                "Data drift detected"
+            )
+
+    else:
         print("Drift report not found.")
 
-        return False
+    return retrain_reasons
 
-    with open(DRIFT_REPORT,"r") as file:
-        report = json.load(file)
-
-    drift_detected = report.get(
-        "drift_detected",
-        False
-    )
-
-    if drift_detected:
-        print("Data drift detected.")
-
-        return True
-    
-    print("No significant data drift detected.")
-
-    return False
-
-
-
-# Trigger retraining
 
 def trigger_retraining():
 
@@ -81,56 +66,53 @@ def trigger_retraining():
     print("RETRAINING TRIGGER")
     print("=" * 60)
 
-    performance_drop = check_performance()
-    drift_detected = check_drift()
+    reasons = check_retraining_condition()
 
+    if not reasons:
 
-    # Trigger condition
-    
-    if performance_drop or drift_detected:
-
-        print("\nRetraining condition detected.")
-
-        if performance_drop:
-            print("- Performance degradation detected")
-
-        if drift_detected:
-            print("- Data drift detected")
-
-        print("\nStarting retraining pipeline...")
-
-        result = subprocess.run(
-            [
-                sys.executable,
-                "-m",
-                "src.retrain"
-            ],
-            cwd=BASE_DIR
-        )
-
-        if result.returncode == 0:
-            print("\nRetraining completed successfully.")
-
-        else:
-            print("\nRetraining failed.")
-
-            return False
-
-    else:
         print("\nNo retraining condition detected.")
-
         print("Model does not require retraining.")
-    print("=" * 60)
+
+        return False
+
+    print("\nRetraining condition detected.")
+
+    for reason in reasons:
+        print(f"- {reason}")
+
+    print("\nStarting retraining pipeline...")
+
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "src.retrain"
+        ],
+        cwd=BASE_DIR
+    )
+
+    if result.returncode != 0:
+
+        print("\nRetraining failed.")
+        return False
+
+    print("\nRetraining completed successfully.")
+
     return True
 
-
-
-# Main
 
 if __name__ == "__main__":
 
     try:
+
         retraining_triggered = trigger_retraining()
+
+        #Send Result to GitHub Actions
+        github_output=os.environ.get("GITHUB_OUTPUT")
+
+        if github_output:
+            with open(github_output, "a") as f:
+                f.write(f"retraining_triggered={'true' if retraining_triggered else 'false'}\n")
 
         if retraining_triggered:
             print("RETRAINING_TRIGGERED")
@@ -139,8 +121,5 @@ if __name__ == "__main__":
 
     except Exception as e:
 
-        print(
-            f"Retraining trigger failed: {e}"
-        )
-
+        print(f"Retraining trigger failed: {e}")
         sys.exit(1)
