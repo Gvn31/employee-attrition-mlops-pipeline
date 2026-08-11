@@ -5,53 +5,73 @@ services:
   mlflow:
     image: python:3.12
     container_name: mlflow-server
-    working_dir: /app
+    working_dir: /mlflow
+
     volumes:
-      - .:/app
+      - mlflow-storage:/mlflow
+      - ./requirements.txt:/requirements.txt:ro
+
     command: >
       bash -c "
-      pip install -r requirements.txt &&
+      pip install -r /requirements.txt &&
       mlflow server
       --host 0.0.0.0
       --port 5000
-      --backend-store-uri sqlite:///mlflow.db
-      --default-artifact-root ./mlruns
+      --backend-store-uri sqlite:////mlflow/mlflow.db
+      --default-artifact-root /mlflow/mlruns
       "
+
     ports:
       - "5000:5000"
+
 
   api:
     build: .
     container_name: employee-api
+
     depends_on:
       - mlflow
+
     ports:
       - "8000:8000"
+
     volumes:
       - .:/app
+
 
   prometheus:
     image: prom/prometheus:latest
     container_name: prometheus
+
     volumes:
       - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
+
     command:
       - "--config.file=/etc/prometheus/prometheus.yaml"
+
     ports:
       - "9090:9090"
+
     depends_on:
       - api
+
 
   grafana:
     image: grafana/grafana-oss:latest
     container_name: grafana
+
     ports:
       - "3000:3000"
+
     depends_on:
       - prometheus
+
     volumes:
       - grafana-storage:/var/lib/grafana
+
     restart: unless-stopped
+
 
 volumes:
   grafana-storage:
+  mlflow-storage:
