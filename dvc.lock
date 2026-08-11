@@ -90,21 +90,34 @@ stages:
       size: 20203165
     - path: models/decision_tree.pkl
       hash: md5
-      md5: dedc9cb3ed86fa2ec0d722f01af240e5
-      size: 2267609
+      md5: 344f93df5a968d6470c1aed9adee5cc4
+      size: 109209
     - path: models/logistic_regression.pkl
       hash: md5
-      md5: 58fe5d8c2e91f6c96cced6d2d7ae2344
+      md5: 49eae5860f4166555b26a80189412793
       size: 2911
     - path: models/random_forest.pkl
       hash: md5
-      md5: 1b020128aa497366cdd46a7125a54099
-      size: 188729129
+      md5: 4ea59699c1e6a3f948f1db13a4ecb588
+      size: 344623833
     - path: models/xgboost.pkl
       hash: md5
-      md5: a224325f0c51406a3ead2d40afd5d080
-      size: 2304307
+      md5: 0c64711c3f76ce6bc9690de4fb33f4a7
+      size: 245989
     - path: src/evaluate.py
       hash: md5
-      md5: 431635dac3e3c9755a36a0161061d92c
-      size: 5322
+      md5: 10fcc066e630486269a8de37ea87f7a3
+      size: 5598
+    outs:
+    - path: evaluation/champion_model.json
+      hash: md5
+      md5: 604df4ade11bfed41c0a2153f9b2651d
+      size: 75
+    - path: evaluation/classification_reports.json
+      hash: md5
+      md5: c6079ed693dd1cd6c2e6b92a1822647c
+      size: 1443
+    - path: evaluation/metrics.json
+      hash: md5
+      md5: 9c60fe0b1c8a3329ac4cfaa3aa7afeef
+      size: 913
