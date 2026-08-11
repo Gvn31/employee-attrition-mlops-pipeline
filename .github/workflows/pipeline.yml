@@ -64,7 +64,21 @@ jobs:
         run: |
           python src/train.py
 
-      # 9. Evaluate Model
+      # 9. Verify Trained Models
+      - name: Verify Trained Models
+        run: |
+          echo "===== MODEL FILES ====="
+          ls -lh models
+
+          test -f models/logistic_regression.pkl
+          test -f models/decision_tree.pkl
+          test -f models/random_forest.pkl
+          test -f models/xgboost.pkl
+
+          echo "All trained model files exist."
+
+          
+      # 10. Evaluate Model
       - name: Evaluate Model
         run: |
           python src/evaluate.py
@@ -75,19 +89,19 @@ jobs:
           echo "===== CHAMPION MODEL ====="
           cat evaluation/champion_model.json
           
-      # 10. Build Docker Image
+      # 11. Build Docker Image
       - name: Build Docker Image
         run: |
           docker build -t employee-attrition-api .
 
-      # 11. Deploy
+      # 12. Deploy
       - name: Deploy Application
         run: |
           docker compose up -d --build api
           docker compose ps
           docker compose logs api
 
-      # 12. Monitor
+      # 13. Monitor
       - name: Check API Health
         run: |
           for i in {1..12}; do
@@ -105,17 +119,17 @@ jobs:
           docker compose logs api
           exit 1
 
-      # 13. Data Drift Check
+      # 14. Data Drift Check
       - name: Check Data Drift
         run: |
           python monitoring/drift_check.py
 
-      # 14. Performance Check
+      # 15. Performance Check
       - name: Check Model Performance
         run: |
           python monitoring/performance_check.py
 
-      # 15. Automatic Retraining/Manual Retraining
+      # 16. Automatic Retraining/Manual Retraining
       - name: Automatic Retraining
         id: retraining
         run: |
@@ -127,7 +141,7 @@ jobs:
             python monitoring/retrain_trigger.py
           fi
 
-      # 16. Redeploy Retrained Model
+      # 17. Redeploy Retrained Model
       - name: Redeploy After Retraining
         if: steps.retraining.outputs.retraining_triggered == 'true'
         run: |
