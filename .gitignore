@@ -11,7 +11,10 @@ logs/
 feature_repo/feature_repo/data/
 mlflow.db
 logs/prediction_logs.csv
-evaluation/
+evaluation/confusion_matrices/
+evaluation/roc_curves/
+evaluation/classification_report.json
+evaluation/metrics.json
 evidently_workspace/
 monitoring/reports/
 mlflow.db
