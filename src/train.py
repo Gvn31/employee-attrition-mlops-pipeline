@@ -42,6 +42,7 @@ def train_model():
     DATA_DIR = os.path.join(BASE_DIR, "data", "processed")
     MODEL_DIR = os.path.join(BASE_DIR, "models")
     MLRUNS_DIR = os.path.join(BASE_DIR, "mlruns")
+    os.makedirs(MODEL_DIR, exist_ok=True)
 
     mlflow.set_tracking_uri("http://127.0.0.1:5000")
     mlflow.set_experiment("Employee Attrition Prediction")
