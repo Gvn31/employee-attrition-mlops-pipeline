@@ -84,8 +84,20 @@ jobs:
       # 12. Monitor
       - name: Check API Health
         run: |
-          sleep 10
-          curl --fail http://localhost:8000/health
+          for i in {1..12}; do
+            if curl --fail http://localhost:8000/health; then
+              echo "API is healthy"
+              exit 0
+            fi
+
+            echo "Waiting for API..."
+            sleep 5
+          done
+
+          echo "API failed to become healthy"
+          docker compose ps -a
+          docker compose logs api
+          exit 1
 
       # 13. Data Drift Check
       - name: Check Data Drift
