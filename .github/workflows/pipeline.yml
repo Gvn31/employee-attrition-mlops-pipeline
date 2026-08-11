@@ -69,6 +69,12 @@ jobs:
         run: |
           python src/evaluate.py
 
+          echo "===== EVALUATION DIRECTORY ====="
+          ls -la evaluation
+
+          echo "===== CHAMPION MODEL ====="
+          cat evaluation/champion_model.json
+          
       # 10. Build Docker Image
       - name: Build Docker Image
         run: |
