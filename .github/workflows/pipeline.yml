@@ -89,6 +89,12 @@ jobs:
 
           echo "Feature dataset created successfully."
 
+      # 8.2 Apply Feast Feature Store
+      - name: Apply Feast Feature Store
+        run: |
+          cd feature_repo/feature_repo
+          feast apply
+
       # 9. Train Model
       - name: Train Model
         run: |
@@ -170,30 +176,19 @@ jobs:
       - name: Automatic Retraining
         id: retraining
         run: |
-
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.retrain }}" = "true" ]; then
-
             echo "Manual retraining requested."
-
             python -m src.retrain
-
             echo "retraining_triggered=true" >> "$GITHUB_OUTPUT"
-
           else
-
             python monitoring/retrain_trigger.py
-
           fi
 
       # 18. Redeploy Retrained Model
       - name: Redeploy After Retraining
         if: steps.retraining.outputs.retraining_triggered == 'true'
         run: |
-
           echo "Redeploying retrained model..."
-
           docker compose up -d --build api
-
           docker compose ps
-
           echo "Retrained model deployed successfully."
