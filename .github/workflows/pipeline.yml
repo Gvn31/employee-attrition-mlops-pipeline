@@ -37,14 +37,8 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install dvc
 
-      # 4. Pull DVC Data
-      - name: Pull DVC Data
-        run: |
-          dvc pull --force
-
-      # 5. Verify Raw Data
+      # 4. Verify Raw Data
       - name: Verify Raw Data
         run: |
           echo "===== RAW DATA ====="
@@ -54,23 +48,23 @@ jobs:
 
           echo "Raw dataset available."
 
-      # 6. Tests
+      # 5. Tests
       - name: Run Tests
         run: |
           python -m compileall src monitoring
 
-      # 7. Start MLflow
+      # 6. Start MLflow
       - name: Start MLflow
         run: |
           docker compose up -d mlflow
           sleep 15
 
-      # 8. Data Pipeline
+      # 7. Data Pipeline
       - name: Run Data Pipeline
         run: |
           python src/preprocessing.py
 
-      # 8.1 Verify Processed Data
+      # 7.1 Verify Processed Data
       - name: Verify Processed Data
         run: |
           echo "===== PROCESSED DATA ====="
@@ -80,12 +74,12 @@ jobs:
 
           echo "Cleaned dataset created successfully."
 
-      # 9. Feature Pipeline
+      # 8. Feature Pipeline
       - name: Run Feature Engineering
         run: |
           python src/feature_engineering.py
 
-      # 9.1 Verify Feature Dataset
+      # 8.1 Verify Feature Dataset
       - name: Verify Feature Dataset
         run: |
           echo "===== FEATURE DATA ====="
@@ -95,12 +89,12 @@ jobs:
 
           echo "Feature dataset created successfully."
 
-      # 10. Train Model
+      # 9. Train Model
       - name: Train Model
         run: |
           python src/train.py
 
-      # 11. Verify Trained Models
+      # 10. Verify Trained Models
       - name: Verify Trained Models
         run: |
           echo "===== MODEL FILES ====="
@@ -110,10 +104,12 @@ jobs:
           test -f models/decision_tree.pkl
           test -f models/random_forest.pkl
           test -f models/xgboost.pkl
+          test -f models/scaler.pkl
+          test -f models/feature_columns.pkl
 
           echo "All trained model files exist."
 
-      # 12. Evaluate Model
+      # 11. Evaluate Model
       - name: Evaluate Model
         run: |
           python src/evaluate.py
@@ -124,12 +120,12 @@ jobs:
           echo "===== CHAMPION MODEL ====="
           cat evaluation/champion_model.json
 
-      # 13. Build Docker Image
+      # 12. Build Docker Image
       - name: Build Docker Image
         run: |
           docker build -t employee-attrition-api .
 
-      # 14. Deploy
+      # 13. Deploy
       - name: Deploy Application
         run: |
           docker compose up -d --build api
@@ -138,7 +134,7 @@ jobs:
 
           docker compose logs api
 
-      # 15. Monitor API Health
+      # 14. Monitor API Health
       - name: Check API Health
         run: |
           for i in {1..12}; do
@@ -160,17 +156,17 @@ jobs:
 
           exit 1
 
-      # 16. Data Drift Check
+      # 15. Data Drift Check
       - name: Check Data Drift
         run: |
           python monitoring/drift_check.py
 
-      # 17. Performance Check
+      # 16. Performance Check
       - name: Check Model Performance
         run: |
           python monitoring/performance_check.py
 
-      # 18. Automatic / Manual Retraining
+      # 17. Automatic / Manual Retraining
       - name: Automatic Retraining
         id: retraining
         run: |
@@ -189,7 +185,7 @@ jobs:
 
           fi
 
-      # 19. Redeploy Retrained Model
+      # 18. Redeploy Retrained Model
       - name: Redeploy After Retraining
         if: steps.retraining.outputs.retraining_triggered == 'true'
         run: |
