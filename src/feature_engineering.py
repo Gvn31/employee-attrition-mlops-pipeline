@@ -8,7 +8,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 MODEL_DIR = os.path.join(BASE_DIR, "models")
 DATA_DIR = os.path.join(BASE_DIR, "data", "processed")
-
+os.makedirs(MODEL_DIR, exist_ok=True)
+os.makedirs(DATA_DIR, exist_ok=True)
 
 def transform_features(df, training=True):
     """
@@ -128,3 +129,4 @@ if __name__ == "__main__":
 
     except Exception as e:
         print(f"Error: {e}")
+        raise
