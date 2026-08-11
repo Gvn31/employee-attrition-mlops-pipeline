@@ -30,6 +30,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Log file path
 LOG_FILE = os.path.join(BASE_DIR, "logs", "prediction_logs.csv")
+os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
 
 #Prometheus custom metrics
 REQUEST_COUNT = Counter(
