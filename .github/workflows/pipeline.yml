@@ -78,6 +78,8 @@ jobs:
       - name: Deploy Application
         run: |
           docker compose up -d --build api
+          docker compose ps
+          docker compose logs api
 
       # 12. Monitor
       - name: Check API Health
