@@ -27,7 +27,7 @@ services:
 
 
   api:
-    build: .
+    image: 901099689002.dkr.ecr.ap-south-1.amazonaws.com/employee-attrition-mlops:v1
     container_name: employee-api
 
     depends_on:
@@ -36,8 +36,6 @@ services:
     ports:
       - "8000:8000"
 
-    volumes:
-      - .:/app
 
 
   prometheus:
