@@ -96,7 +96,9 @@ def train_model():
                 "Employee ID",
                 "event_timestamp",
                 "Attrition"])
-
+    
+    # print("Training DF Shape:", training_df.shape)
+    # print("X Shape:", x.shape)
     y = training_df["Attrition"]
     x_train, x_test, y_train, y_test = train_test_split(x,y,test_size=0.2,random_state=42,stratify=y,)
 
@@ -143,7 +145,7 @@ def train_model():
         param_grid=dt_param_grid,
         cv=5,
         scoring="f1",
-        n_jobs=-1
+        n_jobs=1
     )
 
     dt_grid_search.fit(x_train, y_train)
@@ -189,7 +191,7 @@ def train_model():
         param_grid=rf_param_grid,
         cv=5,
         scoring="f1",
-        n_jobs=-1
+        n_jobs=1
     )
     rf_grid_search.fit(x_train, y_train)
     best_rf_model = rf_grid_search.best_estimator_
@@ -235,7 +237,7 @@ def train_model():
         param_grid=xgb_param_grid,
         cv=5,
         scoring="f1",
-        n_jobs=-1
+        n_jobs=1
     )
     xgb_grid_search.fit(x_train, y_train)
     best_xgb_model = xgb_grid_search.best_estimator_
