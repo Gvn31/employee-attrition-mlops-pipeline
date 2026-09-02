@@ -1,7 +1,7 @@
 venv/
 .ipynb_checkpoints/
 notebooks/.ipynb_checkpoints
-src/__pycache__
+__pycache__/
 **/__pycache__/
 *.py[cod]
 mlruns/
@@ -16,6 +16,5 @@ evaluation/classification_report.json
 evaluation/metrics.json
 evidently_workspace/
 monitoring/reports/
-mlflow.db
 data/processed/*
-model/*.pkl
+models/*.pkl
