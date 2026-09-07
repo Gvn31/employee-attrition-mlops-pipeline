@@ -31,7 +31,7 @@ stages:
       - models/decision_tree.pkl
       - models/random_forest.pkl
       - models/xgboost.pkl
-      - mlruns
+
 
   evaluate:
     cmd: python src/evaluate.py

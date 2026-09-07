@@ -9,29 +9,33 @@ stages:
       size: 9817793
     - path: src/preprocessing.py
       hash: md5
-      md5: 1c49f10c57940dc8de766cea5fcdd6ec
-      size: 1986
+      md5: 8df9679f333322168c555aeed1e7b90a
+      size: 2124
     outs:
     - path: data/processed/emp_attrition_cleaned.csv
       hash: md5
-      md5: 89626f344b3fbd3e382271b86a14fd96
+      md5: 80282cb0d36934e01242908e6cdd8aa0
       size: 11859710
   feature_engineering:
     cmd: python src/feature_engineering.py
     deps:
     - path: data/processed/emp_attrition_cleaned.csv
       hash: md5
-      md5: 89626f344b3fbd3e382271b86a14fd96
+      md5: 80282cb0d36934e01242908e6cdd8aa0
       size: 11859710
     - path: src/feature_engineering.py
       hash: md5
-      md5: 815894e607d3c5fbbe798771e7893ff4
-      size: 2949
+      md5: 5b14e3168b55a9adad3c279533364257
+      size: 3164
     outs:
     - path: data/processed/emp_attrition_features.csv
       hash: md5
-      md5: 7685d27e1f2022a422d518f83ee7a0a0
+      md5: 704c85fd40c9f2c84b2c8f954f5b0670
       size: 20203165
+    - path: data/processed/emp_attrition_features.parquet
+      hash: md5
+      md5: 77f7c95dd37ba5208cb1c7ba4b75d655
+      size: 1551554
     - path: models/feature_columns.pkl
       hash: md5
       md5: ccabddc63fc60ba023b14770da83f488
@@ -43,10 +47,14 @@ stages:
   train:
     cmd: python src/train.py
     deps:
-    - path: data/processed/emp_attrition_features.csv
+    - path: data/processed/emp_attrition_features.parquet
       hash: md5
-      md5: 7685d27e1f2022a422d518f83ee7a0a0
-      size: 20203165
+      md5: 77f7c95dd37ba5208cb1c7ba4b75d655
+      size: 1551554
+    - path: feature_repo/feature_repo/feature_views.py
+      hash: md5
+      md5: 2deab7171c5e90948ff5c98bc96a9a44
+      size: 4649
     - path: models/feature_columns.pkl
       hash: md5
       md5: ccabddc63fc60ba023b14770da83f488
@@ -57,30 +65,25 @@ stages:
       size: 1119
     - path: src/train.py
       hash: md5
-      md5: faed3576c0df99e9f576af1ca09e5b0a
-      size: 9261
+      md5: 17a61854c5a0ee05064519d2bd9050fe
+      size: 9646
     outs:
-    - path: mlruns
-      hash: md5
-      md5: 25d5ebcd3ff10f5e0fc6a29a22c30a66.dir
-      size: 195569855
-      nfiles: 25
     - path: models/decision_tree.pkl
       hash: md5
-      md5: dedc9cb3ed86fa2ec0d722f01af240e5
-      size: 2267609
+      md5: 344f93df5a968d6470c1aed9adee5cc4
+      size: 109209
     - path: models/logistic_regression.pkl
       hash: md5
-      md5: 58fe5d8c2e91f6c96cced6d2d7ae2344
+      md5: 27e0ab613ef7f5d4273f9a9d01588aad
       size: 2911
     - path: models/random_forest.pkl
       hash: md5
-      md5: 1b020128aa497366cdd46a7125a54099
-      size: 188729129
+      md5: 4ea59699c1e6a3f948f1db13a4ecb588
+      size: 344623833
     - path: models/xgboost.pkl
       hash: md5
-      md5: a224325f0c51406a3ead2d40afd5d080
-      size: 2304307
+      md5: 306e7de35ec7eb45783d31a6e82dd0b2
+      size: 246125
   evaluate:
     cmd: python src/evaluate.py
     deps:
