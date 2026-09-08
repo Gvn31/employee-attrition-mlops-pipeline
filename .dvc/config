@@ -1,1 +1,4 @@
-
+[core]
+    remote = storage
+['remote "storage"']
+    url = s3://employee-attrition-dvc-storage
