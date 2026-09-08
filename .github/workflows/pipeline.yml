@@ -63,11 +63,6 @@ jobs:
         run: |
           pip install "dvc[s3]"
 
-      # Configure DVC Remote
-      - name: Configure DVC Remote
-        run: |
-          dvc remote add -d storage s3://employee-attrition-dvc-storage
-
 
       # Pull Dataset From S3
       - name: Pull DVC Data
