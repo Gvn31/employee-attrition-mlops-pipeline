@@ -25,9 +25,7 @@ services:
 
   api:
     image: 901099689002.dkr.ecr.ap-south-1.amazonaws.com/employee-attrition-mlops:v1
-    
 
-  
 
     container_name: employee-api
 
