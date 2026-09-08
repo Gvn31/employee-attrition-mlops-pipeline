@@ -34,8 +34,8 @@ os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
 
 #Prometheus custom metrics
 REQUEST_COUNT = Counter(
-    "prediction_requests_total",
-    "Total prediction requests"
+    "pdiction_requests_total",
+    "Totreal prediction requests"
     )
 PREDICTION_COUNT=Counter(
     "predictions_total",

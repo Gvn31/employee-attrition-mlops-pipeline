@@ -26,7 +26,6 @@ stages:
       - data/processed/emp_attrition_features.parquet
       - models/scaler.pkl
       - models/feature_columns.pkl
-    outs:
       - models/logistic_regression.pkl
       - models/decision_tree.pkl
       - models/random_forest.pkl
