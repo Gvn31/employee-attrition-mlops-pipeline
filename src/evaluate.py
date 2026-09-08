@@ -151,7 +151,10 @@ def evaluate_model():
         ConfusionMatrixDisplay.from_predictions(y_test,y_pred)
         plt.savefig(os.path.join(
             CONFUSION_MATRIX_DIR,
+
                f"{model_name.lower().replace(' ', '_')}.png"
+
+                f"{model_name.lower().replace(' ','_')}.png" 
                 ))
         plt.clf()
         plt.close()
@@ -160,7 +163,9 @@ def evaluate_model():
         RocCurveDisplay.from_predictions(y_test, y_prob)
         plt.savefig(os.path.join(
             ROC_CURVE_DIR, 
+
                 f"{model_name.lower().replace(' ', '_')}.png"
+                f"{model_name.lower().replace(' ','_')}.png"
                 ))
         plt.clf()
         plt.close()

@@ -9,20 +9,20 @@ stages:
       size: 9817793
     - path: src/preprocessing.py
       hash: md5
-      md5: 8df9679f333322168c555aeed1e7b90a
-      size: 2124
+      md5: 57c45d5022fc9f93a691b2053542ad54
+      size: 2047
     outs:
     - path: data/processed/emp_attrition_cleaned.csv
       hash: md5
-      md5: 80282cb0d36934e01242908e6cdd8aa0
-      size: 11859710
+      md5: 5a1454ebada4f70d2d50373bb4ca288f
+      size: 11785211
   feature_engineering:
     cmd: python src/feature_engineering.py
     deps:
     - path: data/processed/emp_attrition_cleaned.csv
       hash: md5
-      md5: 80282cb0d36934e01242908e6cdd8aa0
-      size: 11859710
+      md5: 5a1454ebada4f70d2d50373bb4ca288f
+      size: 11785211
     - path: src/feature_engineering.py
       hash: md5
       md5: 5b14e3168b55a9adad3c279533364257
@@ -30,97 +30,97 @@ stages:
     outs:
     - path: data/processed/emp_attrition_features.csv
       hash: md5
-      md5: 704c85fd40c9f2c84b2c8f954f5b0670
-      size: 20203165
+      md5: b2045bbdaa2f94a1a6e63ba15632064d
+      size: 20128666
     - path: data/processed/emp_attrition_features.parquet
       hash: md5
-      md5: 77f7c95dd37ba5208cb1c7ba4b75d655
-      size: 1551554
+      md5: 28ac53fae2e9405314025ab05b6dab81
+      size: 1553514
     - path: models/feature_columns.pkl
       hash: md5
       md5: ccabddc63fc60ba023b14770da83f488
       size: 1369
     - path: models/scaler.pkl
       hash: md5
-      md5: 595eeda4163cbe42011f6ec0c452e9b6
-      size: 1119
+      md5: 98164571c1ce5f142622ecf9157679af
+      size: 1151
   train:
     cmd: python src/train.py
     deps:
     - path: data/processed/emp_attrition_features.parquet
       hash: md5
-      md5: 77f7c95dd37ba5208cb1c7ba4b75d655
-      size: 1551554
+      md5: 28ac53fae2e9405314025ab05b6dab81
+      size: 1553514
     - path: feature_repo/feature_repo/feature_views.py
       hash: md5
-      md5: 2deab7171c5e90948ff5c98bc96a9a44
-      size: 4649
+      md5: b5600f77b1319e7dcd3f7bc3e1c6a182
+      size: 4527
     - path: models/feature_columns.pkl
       hash: md5
       md5: ccabddc63fc60ba023b14770da83f488
       size: 1369
     - path: models/scaler.pkl
       hash: md5
-      md5: 595eeda4163cbe42011f6ec0c452e9b6
-      size: 1119
+      md5: 98164571c1ce5f142622ecf9157679af
+      size: 1151
     - path: src/train.py
       hash: md5
-      md5: 17a61854c5a0ee05064519d2bd9050fe
-      size: 9646
+      md5: 1f948b2f6d48e280ec0a14dd4a432ff3
+      size: 9177
     outs:
     - path: models/decision_tree.pkl
       hash: md5
-      md5: 344f93df5a968d6470c1aed9adee5cc4
-      size: 109209
+      md5: 0ecdad0e740915e66b8f0d692d4706e8
+      size: 109241
     - path: models/logistic_regression.pkl
       hash: md5
-      md5: 27e0ab613ef7f5d4273f9a9d01588aad
+      md5: 25eba3b78f3d30f78568b84c5d6fddbf
       size: 2911
     - path: models/random_forest.pkl
       hash: md5
-      md5: 4ea59699c1e6a3f948f1db13a4ecb588
-      size: 344623833
+      md5: fd1f39843c472aaccee05b6cfd8d7124
+      size: 21966569
     - path: models/xgboost.pkl
       hash: md5
-      md5: 306e7de35ec7eb45783d31a6e82dd0b2
-      size: 246125
+      md5: 215ee2ae6d9b41caf0cb5e4c146d69f1
+      size: 240287
   evaluate:
     cmd: python src/evaluate.py
     deps:
     - path: data/processed/emp_attrition_features.csv
       hash: md5
-      md5: 7685d27e1f2022a422d518f83ee7a0a0
-      size: 20203165
+      md5: b2045bbdaa2f94a1a6e63ba15632064d
+      size: 20128666
     - path: models/decision_tree.pkl
       hash: md5
-      md5: 344f93df5a968d6470c1aed9adee5cc4
-      size: 109209
+      md5: 0ecdad0e740915e66b8f0d692d4706e8
+      size: 109241
     - path: models/logistic_regression.pkl
       hash: md5
-      md5: 49eae5860f4166555b26a80189412793
+      md5: 25eba3b78f3d30f78568b84c5d6fddbf
       size: 2911
     - path: models/random_forest.pkl
       hash: md5
-      md5: 4ea59699c1e6a3f948f1db13a4ecb588
-      size: 344623833
+      md5: fd1f39843c472aaccee05b6cfd8d7124
+      size: 21966569
     - path: models/xgboost.pkl
       hash: md5
-      md5: 0c64711c3f76ce6bc9690de4fb33f4a7
-      size: 245989
+      md5: 215ee2ae6d9b41caf0cb5e4c146d69f1
+      size: 240287
     - path: src/evaluate.py
       hash: md5
-      md5: 10fcc066e630486269a8de37ea87f7a3
-      size: 5598
+      md5: 8107665e9d5a23d9332ba8c473eb70e5
+      size: 5599
     outs:
     - path: evaluation/champion_model.json
       hash: md5
-      md5: 604df4ade11bfed41c0a2153f9b2651d
-      size: 75
+      md5: fdc6299e1826d73f5eae534e5d7bc9ba
+      size: 72
     - path: evaluation/classification_reports.json
       hash: md5
-      md5: c6079ed693dd1cd6c2e6b92a1822647c
-      size: 1443
+      md5: 029dcc3b6bd30521ba0e3e0214cd86e9
+      size: 1438
     - path: evaluation/metrics.json
       hash: md5
-      md5: 9c60fe0b1c8a3329ac4cfaa3aa7afeef
-      size: 913
+      md5: 64fc893b5671672952a07e8322dc869c
+      size: 881
