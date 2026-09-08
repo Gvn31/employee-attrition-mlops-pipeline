@@ -157,53 +157,31 @@ jobs:
           echo "===== CHAMPION MODEL ====="
           cat evaluation/champion_model.json
 
-      # 12. Build Docker Image
-      - name: Build Docker Image
+      
+  # 12. Login to Amazon ECR
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+  # 13. Build and Push Docker Image
+      - name: Build and Push Docker Image
+        env:
+          ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
         run: |
-          docker build -t employee-attrition-api .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:v1 .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:v1
 
-      # 13. Deploy
-      - name: Deploy Application
-        run: |
-          docker compose up -d --build api
-
-          docker compose ps
-
-          docker compose logs api
-
-      # 14. Monitor API Health
-      - name: Check API Health
-        run: |
-          for i in {1..12}; do
-
-            if curl --fail http://localhost:8000/health; then
-              echo "API is healthy"
-              exit 0
-            fi
-
-            echo "Waiting for API..."
-            sleep 5
-
-          done
-
-          echo "API failed to become healthy"
-
-          docker compose ps -a
-          docker compose logs api
-
-          exit 1
-
-      # 15. Data Drift Check
+  # 14. Data Drift Check
       - name: Check Data Drift
         run: |
           python monitoring/drift_check.py
 
-      # 16. Performance Check
+  # 15. Performance Check
       - name: Check Model Performance
         run: |
           python monitoring/performance_check.py
 
-      # 17. Automatic / Manual Retraining
+  # 16. Automatic / Manual Retraining
       - name: Automatic Retraining
         id: retraining
         run: |
@@ -214,17 +192,47 @@ jobs:
 
             echo "retraining_triggered=true" >> "$GITHUB_OUTPUT"
           else
-            python monitoring/retrain_trigger.py
-          fi
+              python monitoring/retrain_trigger.py
+            fi
 
-      # 18. Redeploy Retrained Model
-      - name: Redeploy After Retraining
-        if: steps.retraining.outputs.retraining_triggered == 'true'
-        run: |
-          echo "Redeploying retrained model..."
+  # 17. Deploy to EC2
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 901099689002.dkr.ecr.ap-south-1.amazonaws.com
 
-          docker compose up -d --build api
+            docker pull 901099689002.dkr.ecr.ap-south-1.amazonaws.com/employee-attrition-mlops:v1
 
-          docker compose ps
+            cd ~/employee-attrition-mlops-pipeline
 
-          echo "Retrained model deployed successfully."
+            docker compose down
+            docker compose up -d
+
+            docker ps
+
+ # 18. Verify Deployment
+      - name: Verify EC2 API Health
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            for i in {1..12}; do
+              if curl --fail http://localhost:8000/health; then
+                echo "API is healthy"
+                exit 0
+              fi
+
+              echo "Waiting for API..."
+              sleep 5
+            done
+
+            echo "API failed health check"
+            docker ps
+            docker compose logs api
+            exit 1
