@@ -50,6 +50,25 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # Configure AWS Credentials
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+
+      # Install DVC S3 Support
+      - name: Install DVC S3
+        run: |
+          pip install "dvc[s3]"
+
+      # Pull Dataset From S3
+      - name: Pull DVC Data
+        run: |
+          dvc pull
+
+
       # 4. Verify Raw Data
       - name: Verify Raw Data
         run: |
