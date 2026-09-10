@@ -1,8 +1,10 @@
 # Employee Attrition MLOps Pipeline
 
-An end-to-end **MLOps pipeline for Employee Attrition Prediction** that covers data preparation, feature engineering, model training, evaluation, model tracking, deployment, monitoring, and automated retraining.
+Production-Grade End-to-End MLOps Pipeline for Employee Attrition Prediction using DVC, Feast, MLflow, FastAPI, Docker, AWS (S3, ECR, EC2), GitHub Actions, Prometheus and Grafana.
 
-The project uses **DVC, Feast, MLflow, FastAPI, Docker, GitHub Actions, Prometheus, and Grafana**.
+An end-to-end MLOps pipeline for Employee Attrition Prediction that covers data preparation, feature engineering, model training, evaluation, experiment tracking, deployment, monitoring, automated retraining, and cloud deployment.
+
+The project uses DVC, Feast, MLflow, FastAPI, Docker, AWS S3, AWS ECR, AWS EC2, GitHub Actions, Prometheus, and Grafana.
 
 ---
 
@@ -19,15 +21,14 @@ Predict whether an employee is likely to leave an organization based on demograp
 - Left
 
 ---
-
 ## MLOps Architecture
 
 ```text
 Raw Data
    ↓
-Data Preprocessing
+DVC + AWS S3
    ↓
-DVC
+Data Preprocessing
    ↓
 Feature Engineering
    ↓
@@ -37,19 +38,26 @@ Model Training
    ↓
 Model Evaluation
    ↓
-MLflow
+MLflow Tracking
    ↓
-FastAPI + Docker
+Docker Image Build
    ↓
-Monitoring
+Amazon ECR
    ↓
-Drift / Performance Check
+Amazon EC2 Deployment
    ↓
-Retraining
+FastAPI Service
+   ↓
+Prometheus + Grafana
+   ↓
+Data Drift Monitoring
+   ↓
+Performance Monitoring
+   ↓
+Automatic Retraining
    ↓
 Redeployment
 ```
-
 ---
 
 ## CI/CD Pipeline
@@ -58,33 +66,39 @@ GitHub Actions automates the complete MLOps workflow.
 
 ```text
 Code / Data Change
-       ↓
-   Tests
-       ↓
+        ↓
+GitHub Actions
+        ↓
+DVC Pull From AWS S3
+        ↓
+Tests
+        ↓
 Preprocessing
-       ↓
+        ↓
 Feature Engineering
-       ↓
-    Feast
-       ↓
+        ↓
+Feast
+        ↓
 Model Training
-       ↓
+        ↓
 Model Evaluation
-       ↓
-   MLflow
-       ↓
+        ↓
+MLflow Tracking
+        ↓
 Docker Build
-       ↓
-FastAPI Deployment
-       ↓
+        ↓
+Push Image To Amazon ECR
+        ↓
+Deploy To Amazon EC2
+        ↓
 API Health Check
-       ↓
-Data Drift Check
-       ↓
-Performance Check
-       ↓
-Retraining if Required
-       ↓
+        ↓
+Data Drift Monitoring
+        ↓
+Performance Monitoring
+        ↓
+Retraining (If Required)
+        ↓
 Redeployment
 ```
 
@@ -92,18 +106,25 @@ Redeployment
 
 ## Technologies
 
-- **Python**
-- **Pandas / NumPy**
-- **Scikit-learn**
-- **XGBoost**
-- **DVC**
-- **Feast**
-- **MLflow**
-- **FastAPI**
-- **Docker / Docker Compose**
-- **Prometheus**
-- **Grafana**
-- **GitHub Actions**
+- Python
+- Pandas
+- NumPy
+- Scikit-learn
+- XGBoost
+- DVC
+- Feast
+- MLflow
+- FastAPI
+- Docker
+- Docker Compose
+- GitHub Actions
+- Prometheus
+- Grafana
+- AWS S3
+- AWS ECR
+- AWS EC2
+- AWS IAM
+
 
 ---
 
@@ -159,25 +180,22 @@ The model with the best F1 score is selected as the **Champion Model**.
 
 ---
 
-## DVC
+## DVC and AWS S3
 
-DVC is used for dataset and pipeline versioning.
+DVC is used for dataset versioning while Amazon S3 acts as the remote storage backend.
 
 ```text
 Raw Data
    ↓
-Processed Data
+DVC Tracking
    ↓
-Feature Data
+AWS S3 Storage
+   ↓
+GitHub Actions dvc pull
+   ↓
+Pipeline Execution
+
 ```
-
-Main DVC files:
-
-```text
-dvc.yaml
-dvc.lock
-```
-
 ---
 
 ## Feast Feature Store
@@ -270,6 +288,35 @@ Example prediction response:
 ## Docker
 
 The application is containerized using Docker.
+
+
+## AWS Deployment
+
+The application is deployed on AWS using:
+
+- Amazon S3 for DVC remote storage
+- Amazon ECR for Docker image registry
+- Amazon EC2 for application hosting
+- IAM for secure access control
+
+Deployment Flow:
+
+```text
+GitHub Actions
+      ↓
+Build Docker Image
+      ↓
+Push To Amazon ECR
+      ↓
+SSH To EC2
+      ↓
+Pull Latest Image
+      ↓
+Docker Compose Restart
+      ↓
+Health Check
+
+```
 
 ### Build
 
@@ -397,6 +444,7 @@ The workflow can run through:
 ## Project Structure
 
 ```text
+
 employee-attrition-mlops-pipeline/
 │
 ├── .github/
@@ -405,7 +453,7 @@ employee-attrition-mlops-pipeline/
 │
 ├── data/
 │   ├── raw/
-│   │   └── emp_attrition_csv.csv
+│   │   └── emp_attrition_csv.csv.dvc
 │   │
 │   └── processed/
 │       ├── emp_attrition_cleaned.csv
@@ -457,7 +505,14 @@ employee-attrition-mlops-pipeline/
 ├── .gitignore
 ├── .dockerignore
 ├── LICENSE
-└── README.md
+├── README.md
+│
+└── AWS Infrastructure
+    ├── Amazon S3 (DVC Remote Storage)
+    ├── Amazon ECR (Docker Image Registry)
+    ├── Amazon EC2 (Application Hosting)
+    └── IAM (Access Management)
+
 ```
 
 ---
@@ -493,37 +548,45 @@ docker compose up -d --build
 ### Open Swagger
 
 ```text
-http://127.0.0.1:8000/docs
+http://<EC2-PUBLIC-IP>:8000/docs
 ```
 
 ---
 
 ## Project Highlights
 
-- End-to-end MLOps pipeline
-- Data versioning with DVC
-- Feature Store with Feast
-- Multiple ML models
-- Hyperparameter tuning
-- Champion model selection
-- MLflow experiment tracking
+
+- End-to-End MLOps Pipeline
+- Binary Classification Problem
+- Data Versioning with DVC
+- Remote Storage using AWS S3
+- Feature Store using Feast
+- Multiple ML Models
+- Hyperparameter Tuning with GridSearchCV
+- Champion Model Selection
+- MLflow Experiment Tracking
 - MLflow Model Registry
-- FastAPI deployment
-- Docker containerization
-- Prediction logging
-- Data drift monitoring
-- Model performance monitoring
-- Automatic retraining
+- FastAPI REST API
+- Docker Containerization
+- Amazon ECR Image Registry
+- Amazon EC2 Deployment
+- Prediction Logging
+- Data Drift Monitoring
+- Model Performance Monitoring
+- Automatic Retraining
 - GitHub Actions CI/CD
-- Prometheus and Grafana
+- Prometheus Monitoring
+- Grafana Dashboards
 
 ---
 
 ## Future Improvements
 
-- Cloud deployment
-- Kubernetes
-- Advanced model monitoring
-- Model explainability
-- API authentication
-- Automated rollback
+- Kubernetes (EKS)
+- Terraform Infrastructure as Code
+- Blue-Green Deployment
+- Automated Rollback
+- Advanced Model Monitoring
+- SHAP-based Explainability
+- API Authentication & Authorization
+- Multi-Environment Deployment (Dev / Staging / Production)
